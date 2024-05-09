@@ -3,6 +3,7 @@ import primitives.Point;
 import primitives.Vector;
 /**
  * Interface representing a geometric body in a three-dimensional Cartesian coordinate system.
+ * @author H & H
  */
 public interface Geometry {
 
