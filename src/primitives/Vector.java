@@ -8,6 +8,7 @@ public class Vector extends Point {
 
     /**
      * Constructs a vector with the specified coordinates.
+     *
      * @param x The x-coordinate of the vector.
      * @param y The y-coordinate of the vector.
      * @param z The z-coordinate of the vector.
@@ -22,27 +23,36 @@ public class Vector extends Point {
 
     /**
      * Constructs a vector with the specified coordinates as a Double3 object.
-     * @param xyz The coordinates of the vector as a Double3 object.
+     *
+     * @param _xyz The coordinates of the vector as a Double3 object.
      * @throws IllegalArgumentException if the given coordinates form a zero vector.
      */
-    public Vector(Double3 xyz) {
-        super(xyz);
-        if (xyz.equals(Double3.ZERO)) {
+    public Vector(Double3 _xyz) {
+        super(_xyz);
+        if (_xyz.equals(Double3.ZERO)) {
             throw new IllegalArgumentException("The given vector is zero");
         }
+     //   super.xyz = _xyz;
     }
 
     /**
      * Adds another vector to this vector, resulting in a new vector.
+     *
      * @param other The vector to add.
      * @return The new vector resulting from adding the other vector to this vector.
      */
     public Vector add(Vector other) {
-        return new Vector(super.add(other).xyz);
+        return new Vector(this.xyz.add(other.xyz));
+    }
+
+    @Override
+    public Vector subtract(Point p2) { //?
+        return super.subtract(p2);
     }
 
     /**
      * Scales this vector by a scalar value, resulting in a new vector.
+     *
      * @param scalar The scalar value to scale the vector by.
      * @return The new scaled vector.
      */
@@ -52,6 +62,7 @@ public class Vector extends Point {
 
     /**
      * Computes the dot product of this vector with another vector.
+     *
      * @param other The other vector.
      * @return The dot product of this vector and the other vector.
      */
@@ -61,6 +72,7 @@ public class Vector extends Point {
 
     /**
      * Computes the cross product of this vector with another vector.
+     *
      * @param other The other vector.
      * @return The cross product of this vector and the other vector.
      */
@@ -74,6 +86,7 @@ public class Vector extends Point {
 
     /**
      * Calculates the squared length of this vector.
+     *
      * @return The squared length of this vector.
      */
     public double lengthSquared() {
@@ -82,6 +95,7 @@ public class Vector extends Point {
 
     /**
      * Calculates the length of this vector.
+     *
      * @return The length of this vector.
      */
     public double length() {
@@ -90,6 +104,7 @@ public class Vector extends Point {
 
     /**
      * Returns a new vector that is the normalization of this vector.
+     *
      * @return The normalized vector.
      * @throws IllegalArgumentException if this vector is a zero vector.
      */
@@ -107,8 +122,11 @@ public class Vector extends Point {
         return obj instanceof Vector other && super.equals(other);
         //  return false;
     }
+
     @Override
-    public String toString() { return "->" + super.toString(); }
+    public String toString() {
+        return "->" + super.toString();
+    }
 
     @Override
     public int hashCode() {

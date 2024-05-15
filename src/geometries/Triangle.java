@@ -1,6 +1,7 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Vector;
 
 /**
  * Represents a triangle in three-dimensional space.
@@ -18,5 +19,11 @@ public class Triangle extends Polygon {
     public Triangle(Point a, Point b, Point c) {
         super(a, b, c);
     }
+
+    @Override
+    public Vector getNormal(Point point) {
+        return super.getNormal(point);//??
+    }
+    //בגופים גאומטרים לא צריך לזרוס את equals
 }
 
