@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for primitives.Point class
  *
- * @author chagit r
+ * @author H & H
  */
-
+//TODO: לחלק את הבדיקות למקרי קצה ומחלקות שקילות
 class PointTest {
     public static final double DELTA = 0.00001;
     Point p1 = new Point(1, 2, 3);
@@ -22,14 +22,14 @@ class PointTest {
     Vector v1 = new Vector(1, 2, 3);
     Vector v1Opposite = new Vector(-1, -2, -3);
 
+    /**
+     * Test method for {@link primitives.Point#subtract(Point)}.
+     */
     @Test
     void testSubtract() { //לחלק את הבדיקות למחלקות שקילות/מקרי קצה
-        assertEquals(p2.subtract(p1), v1,
-                "subtract(): (point2 - point1) does not work correctly");
-        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1),
-                "subtract(): (point - itself) does not throw an exception");
-        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1),
-                "subtract(): (point - itself) throws wrong exception");
+        assertEquals(p2.subtract(p1), v1, "subtract(): (point2 - point1) does not work correctly");
+        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1), "subtract(): (point - itself) does not throw an exception");
+        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1), "subtract(): (point - itself) throws wrong exception");
     }
 
 
@@ -39,23 +39,24 @@ class PointTest {
     @Test
     void testAdd() {
         // Add vector to point
-        assertEquals(p2, p1.add(v1),
-                "add(): (point + vector) = center of coordinates does not work correctly");
-        assertEquals(Point.ZERO, p1.add(v1Opposite),
-                "add(): (point + vector) = center of coordinates does not work correctly");
+        assertEquals(p2, p1.add(v1), "add(): (point + vector) = center of coordinates does not work correctly");
+        assertEquals(Point.ZERO, p1.add(v1Opposite), "add(): (point + vector) = center of coordinates does not work correctly");
 
     }
 
+    /**
+     * Test method for {@link primitives.Point#distanceSquared(Point)} .
+     */
     @Test
     void testDistanceSquared() {
-        assertEquals(0, p1.distanceSquared(p1), DELTA,
-                "distanceSquared(): point squared distance to itself is not zero");
-        assertEquals(9, p1.distanceSquared(p3), DELTA,
-                "distanceSquared(): squared distance between points is wrong");
-        assertEquals(9, p3.distanceSquared(p1), DELTA,
-                "distanceSquared(): squared distance between points is wrong");
+        assertEquals(0, p1.distanceSquared(p1), DELTA, "distanceSquared(): point squared distance to itself is not zero");
+        assertEquals(9, p1.distanceSquared(p3), DELTA, "distanceSquared(): squared distance between points is wrong");
+        assertEquals(9, p3.distanceSquared(p1), DELTA, "distanceSquared(): squared distance between points is wrong");
     }
 
+    /**
+     * Test method for {@link primitives.Point#distance(Point)} .
+     */
     @Test
     void distance() {
         assertEquals(0, p1.distance(p1), DELTA, "distance(): point squared distance to itself is not zero");

@@ -4,8 +4,14 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class SphereTest {
     private final double DELTA = 0.000001;
+
+
+    /**
+     * Test method for {@link Sphere#getNormal(Point)}.
+     */
     @Test
     void getNormal() {
         // ============ Equivalence Partitions Tests ==============

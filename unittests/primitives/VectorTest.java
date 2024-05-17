@@ -13,14 +13,27 @@ class VectorTest {
     Vector v3 = new Vector(0, 3, -2);
     Vector v4 = new Vector(1, 2, 2);
     public static final double DELTA = 0.00001;
-
+//TODO: לחלק את הבדיקות למקרי קצה ומחלקות שקילות
+    /**
+     * Test method for {@link Vector#Vector(double, double, double)}.
+     */
     @Test
     public void testConstructor() {
         // TC01: The given vector is zero
-        assertThrows(IllegalArgumentException.class, () -> new Vector(Point.ZERO.xyz), "Constructed a zero vector");
+        assertThrows(IllegalArgumentException.class, () -> new Vector(0,0,0), "Constructed a zero vector");
+    }
+    /**
+     * Test method for {@link Vector#Vector(Double3)}.
+     */
+    @Test
+    public void testConstructor2() {
+        // TC01: The given vector is zero
+        assertThrows(IllegalArgumentException.class, () -> new Vector(0,0,0), "Constructed a zero vector");
     }
 
-
+    /**
+     * Test method for {@link Vector#add(Vector)}.
+     */
     //איפה אני עושה את הבדיקות של חיסור בוקטור כי הרי אין לוקטור פונק חיסור
     @Test
     void testAdd() {
@@ -29,6 +42,9 @@ class VectorTest {
         assertEquals(v1Opposite, v1.add(v2), "add(): Vector + Vector does not work correctly");
     }
 
+    /**
+     * Test method for {@link primitives.Vector#subtract(Point)}.
+     */
     @Test
     void testSubtract() {
         assertThrows(IllegalArgumentException.class, () -> v1.subtract(v1),
@@ -40,7 +56,9 @@ class VectorTest {
 
     }
 
-
+    /**
+     * Test method for {@link Vector#dotProduct(Vector)}.
+     */
     @Test
     void testDotProduct() {
         assertEquals(0, v1.dotProduct(v3), DELTA,
@@ -50,8 +68,7 @@ class VectorTest {
     }
 
     /**
-     * Test method for
-     * {@link primitives.Vector#crossProduct(primitives.Vector)}.
+     * Test method for {@link primitives.Vector#subtract(Point)}.
      */
     @Test
     void testCrossProduct() {
@@ -71,18 +88,25 @@ class VectorTest {
 
     }
 
-
+    /**
+     * Test method for {@link Vector#lengthSquared()}.
+     */
     @Test
     void testLengthSquared() {
         assertEquals(0, v4.lengthSquared() - 9, DELTA, "lengthSquared() wrong length");
     }
 
+    /**
+     * Test method for {@link Vector#length()}.
+     */
     @Test
     void testLength() {
         assertEquals(0, v4.length() - 3, "length() wrong length");
     }
 
-
+    /**
+     * Test method for {@link Vector#normalize()}.
+     */
     @Test
     void testNormalize() {
         Vector v = new Vector(0, 3, 4);

@@ -1,8 +1,7 @@
 package geometries;
 
 import org.junit.jupiter.api.Test;
-import primitives.Point;
-import primitives.Vector;
+import primitives.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,12 +13,13 @@ class PlaneTest {
         Point point2 = new Point(2, 2, 2);
         Point point3 = new Point(3, 3, 3);
 
-        assertThrows(IllegalArgumentException.class, () -> new Plane(point1, point2, point3),
+        assertThrows(IllegalArgumentException.class,
+                () -> new Plane(point1, point2, point3),
                 "The first and second points are connected, The points are on the same line");
     }
 
     @Test
-    void getNormal() {
+    void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here - using a triangle
         Point[] pts =
@@ -30,14 +30,14 @@ class PlaneTest {
         // generate the test result
         Vector result = tri.getNormal(new Point(0, 0, 1));
         // ensure |result| = 1
-        assertEquals(1, result.length(), DELTA, "Triangle's normal is not a unit vector");
+        assertEquals(1, result.length(), DELTA, "Plane's normal is not a unit vector");
         // ensure the result is orthogonal to all the edges
         for (int i = 0; i < 3; ++i)
             assertEquals(0d, result.dotProduct(pts[i].subtract(pts[i == 0 ? 2: i - 1])), DELTA,
-                    "Triangle's normal is not orthogonal to one of the edges");
+                    "Plane's normal is not orthogonal to one of the edges");
     }
 
-    @Test
-    void testGetNormal() {
-    }
+//    @Test
+//    void testGetNormal() {
+//    }
 }
