@@ -45,4 +45,10 @@ class TubeTest {
         //TC02: 1 extreme case when the vector (p-p0) is orthogonal to v
         //TODO :
     }
+
+
+    @Test
+    void findIntersections() {
+
+    }
 }

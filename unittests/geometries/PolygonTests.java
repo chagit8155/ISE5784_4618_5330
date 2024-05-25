@@ -8,6 +8,7 @@ import java.util.*;
 
 import geometries.Polygon;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 /**
@@ -107,4 +108,10 @@ public class PolygonTests {
                     "Polygon's normal is not orthogonal to one of the edges");
     }
 
+    /**
+     * Test method for {@link Polygon#findIntersections(Ray)}.
+     */
+    @Test
+    void findIntersections() {
+    }
 }

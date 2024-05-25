@@ -2,7 +2,7 @@ package primitives;
 
 import static java.lang.System.out;
 
-import static primitives.Util.isZero;
+import static primitives.Util.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author H & H
  */
-//TODO: לחלק את הבדיקות למקרי קצה ומחלקות שקילות
+
 class PointTest {
     public static final double DELTA = 0.00001;
     Point p1 = new Point(1, 2, 3);
@@ -26,10 +26,15 @@ class PointTest {
      * Test method for {@link primitives.Point#subtract(Point)}.
      */
     @Test
-    void testSubtract() { //לחלק את הבדיקות למחלקות שקילות/מקרי קצה
+    void testSubtract() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test that the new point is the right one
         assertEquals(p2.subtract(p1), v1, "subtract(): (point2 - point1) does not work correctly");
+
+        // =============== Boundary Values Tests ==================
+        // TC02: Test that exception is thrown for zero vector
         assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1), "subtract(): (point - itself) does not throw an exception");
-        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1), "subtract(): (point - itself) throws wrong exception");
+        assertThrows(Exception.class, () -> p1.subtract(p1), "subtract(): (point - itself) throws wrong exception");
     }
 
 
@@ -37,9 +42,11 @@ class PointTest {
      * Test method for {@link primitives.Point#add(primitives.Vector)}.
      */
     @Test
-    void testAdd() {
-        // Add vector to point
+    void testAdd() { // Add vector to point
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test that the new point is the right one
         assertEquals(p2, p1.add(v1), "add(): (point + vector) = center of coordinates does not work correctly");
+        // TC02: Test adding an opposite vector to point the result is the zero point
         assertEquals(Point.ZERO, p1.add(v1Opposite), "add(): (point + vector) = center of coordinates does not work correctly");
 
     }
@@ -49,9 +56,15 @@ class PointTest {
      */
     @Test
     void testDistanceSquared() {
-        assertEquals(0, p1.distanceSquared(p1), DELTA, "distanceSquared(): point squared distance to itself is not zero");
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test that the new point is the right one
         assertEquals(9, p1.distanceSquared(p3), DELTA, "distanceSquared(): squared distance between points is wrong");
         assertEquals(9, p3.distanceSquared(p1), DELTA, "distanceSquared(): squared distance between points is wrong");
+
+        // =============== Boundary Values Tests ==================
+        // TC02: Tests that distanceSquared works for the distance of a point from itself
+        assertEquals(0, p1.distanceSquared(p1), DELTA, "distanceSquared(): point squared distance to itself is not zero");
+
     }
 
     /**
@@ -59,8 +72,13 @@ class PointTest {
      */
     @Test
     void distance() {
-        assertEquals(0, p1.distance(p1), DELTA, "distance(): point squared distance to itself is not zero");
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test that the new point is the right one
         assertEquals(3, p1.distance(p3), DELTA, "distance(): distance between points is wrong");
         assertEquals(3, p3.distance(p1), DELTA, "distance(): distance between points is wrong");
+
+        // =============== Boundary Values Tests ==================
+        // TC01: Tests that distance works for the distance of a point from itself
+        assertEquals(0, p1.distance(p1), DELTA, "distance(): point squared distance to itself is not zero");
     }
 }

@@ -14,21 +14,25 @@ class VectorTest {
     Vector v4 = new Vector(1, 2, 2);
     public static final double DELTA = 0.00001;
 //TODO: לחלק את הבדיקות למקרי קצה ומחלקות שקילות
+
     /**
      * Test method for {@link Vector#Vector(double, double, double)}.
      */
     @Test
     public void testConstructor() {
-        // TC01: The given vector is zero
-        assertThrows(IllegalArgumentException.class, () -> new Vector(0,0,0), "Constructed a zero vector");
+        // =============== Boundary Values Tests ==================
+        // TC01: Tests that zero vector throws exception
+        assertThrows(IllegalArgumentException.class, () -> new Vector(0, 0, 0), "ERROR: Vector() Constructed a zero vector");
     }
+
     /**
      * Test method for {@link Vector#Vector(Double3)}.
      */
     @Test
     public void testConstructor2() {
-        // TC01: The given vector is zero
-        assertThrows(IllegalArgumentException.class, () -> new Vector(0,0,0), "Constructed a zero vector");
+        // =============== Boundary Values Tests ==================
+        // TC01: Tests that zero vector throws exception
+        assertThrows(IllegalArgumentException.class, () -> new Vector(Double3.ZERO), "Constructed a zero vector");
     }
 
     /**
@@ -37,22 +41,27 @@ class VectorTest {
     //איפה אני עושה את הבדיקות של חיסור בוקטור כי הרי אין לוקטור פונק חיסור
     @Test
     void testAdd() {
-        assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite), "add() Vector + itself does not throw an exception"); //?
-        assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite), "add() Vector + itself throws wrong exception");
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test that the new vector is the right one
         assertEquals(v1Opposite, v1.add(v2), "add(): Vector + Vector does not work correctly");
+
+        // =============== Boundary Values Tests ==================
+        // TC01: Test opposite direction vector throws exception
+        assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite), "add() Vector + itself does not throw an exception");
+        // TC02: Test opposite direction vector throws right exception
+        assertThrows(Exception.class, () -> v1.add(v1Opposite), "add() Vector + itself throws wrong exception");
+
     }
+//TODO:
 
     /**
      * Test method for {@link primitives.Vector#subtract(Point)}.
      */
     @Test
     void testSubtract() {
-        assertThrows(IllegalArgumentException.class, () -> v1.subtract(v1),
-                "subtract() Vector - itself does not throw an exception"); //?
-        assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite),
-                "subtract() Vector + itself throws wrong exception");
-        assertEquals(v1Opposite, v1.add(v2),
-                "subtract(): Vector + Vector does not work correctly");
+        assertThrows(IllegalArgumentException.class, () -> v1.subtract(v1), "subtract() Vector - itself does not throw an exception"); //?
+        assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite), "subtract() Vector + itself throws wrong exception");
+        assertEquals(v1Opposite, v1.add(v2), "subtract(): Vector + Vector does not work correctly");
 
     }
 
@@ -61,20 +70,35 @@ class VectorTest {
      */
     @Test
     void testDotProduct() {
-        assertEquals(0, v1.dotProduct(v3), DELTA,
-                " dotProduct(): for orthogonal vectors is not zero");
-        assertEquals(0, v1.dotProduct(v2) + 28, DELTA,
-                " dotProduct(): for orthogonal vectors is not zero");
+        // ============ Equivalence Partitions Tests ==============
+
+        // TC01: Test vectors in acute angle
+        Vector v6 = new Vector(1, 2, 3);
+        Vector v7 = new Vector(4, 5, 6);
+        assertEquals(32, v6.dotProduct(v7), "ERROR: dotProduct() for acute angle does not work correctly");
+        // TC02: Test vectors in obtuse angle
+        Vector v8 = new Vector(-1, -1, -3);
+        assertEquals(-12, v6.dotProduct(v8), "ERROR: dotProduct() for obtuse angle does not work correctly");
+
+        // ================== Boundary Values Tests ==================
+        // TC03: Test orthogonal vectors
+        assertEquals(0, v1.dotProduct(v3), DELTA, " dotProduct(): for orthogonal vectors is not zero");
+        assertEquals(0, v1.dotProduct(v2) + 28, DELTA, " dotProduct(): for orthogonal vectors is not zero");
+
+        // TC04: Text dotProduct when one of the vectors is the unit vector
+        Vector v5 = new Vector(1, 0, 0);
+        assertEquals(1, v1.dotProduct(v5), "ERROR: dotProduct() for unit vector does not work correctly");
     }
 
+//TODO: לחלק את מכפלה וקטורית
     /**
      * Test method for {@link primitives.Vector#subtract(Point)}.
      */
     @Test
     void testCrossProduct() {
         // ============ Equivalence Partitions Tests ==============
-        Vector vr = v1.crossProduct(v3);
-        // TC01: Test that length of cross-product is proper (orthogonal vectors taken
+        Vector vr = v1.crossProduct(v3); //vr : ->(-13,2,3)
+        // TC01: Test simple that length of cross-product is proper (orthogonal vectors taken
         // for simplicity)
         assertEquals(v1.length() * v3.length(), vr.length(), DELTA, "crossProduct() wrong result length");
         // TC02: Test cross-product result orthogonality to its operands
@@ -93,6 +117,8 @@ class VectorTest {
      */
     @Test
     void testLengthSquared() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test length squared
         assertEquals(0, v4.lengthSquared() - 9, DELTA, "lengthSquared() wrong length");
     }
 
@@ -101,6 +127,9 @@ class VectorTest {
      */
     @Test
     void testLength() {
+        // ============ Equivalence Partitions Tests ==============
+
+        // TC01: Test length
         assertEquals(0, v4.length() - 3, "length() wrong length");
     }
 
@@ -116,8 +145,7 @@ class VectorTest {
         assertEquals(1d, n.lengthSquared(), DELTA, "normalize() the normalized vector is not a unit vector");
         assertThrows(IllegalArgumentException.class, () -> v.crossProduct(n), "normalize() normalized vector is not in the same direction");
         assertEquals(new Vector(0, 0.6, 0.8), n, "normalize() wrong normalized vector");
-        assertTrue(v.dotProduct(n) > 0,
-                "normalize() the normalized vector is opposite to the original one"); //?
+        assertTrue(v.dotProduct(n) > 0, "normalize() the normalized vector is opposite to the original one"); //?
 
     }
 

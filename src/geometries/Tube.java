@@ -2,7 +2,10 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * Represents a tube in three-dimensional space, extending along a specified axis.
@@ -32,10 +35,22 @@ public class Tube extends RadialGeometry {
         // t =             v       dot        (p    -   p0)
         double t = axisDirection.dotProduct(point.subtract(axis.getHead()));
         // o =      p0 + t dot v
-        Point projectionPoint = axis.getHead().add(axisDirection.scale(t));
+        Point projectionPoint;
+        if (Util.isZero(t))
+            projectionPoint = axis.getHead();
+        else
+            projectionPoint = axis.getHead().add(axisDirection.scale(t));// getpoint
         // n = normalize( p - o )
-        return  point.subtract(projectionPoint).normalize();
+        return point.subtract(projectionPoint).normalize();
     }
 
+    //     if (Util.isZero(t))
+//    o=axis.getHead();
+//        else
+//    o=axis.getPoint(t);
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
+    }
 }
 
