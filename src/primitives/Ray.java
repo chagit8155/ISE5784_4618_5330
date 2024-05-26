@@ -44,6 +44,19 @@ public class Ray {
         return direction;
     }
 
+
+    /**
+     * Calculates a point on the ray at a given distance from the ray's origin.
+     *
+     * @param t The distance from the ray's origin.
+     * @return The point on the ray at the distance t from the ray's origin. If t is zero, returns the origin point of the ray.
+     */
+    public  Point getPoint(double t) {
+        if(Util.isZero(t))
+            return head;
+        return  head.add(direction.scale(t));
+    }
+
     @Override
     public String toString() {
         return "Ray:" + head + "->" + direction;

@@ -35,13 +35,13 @@ public class Tube extends RadialGeometry {
         // t =             v       dot        (p    -   p0)
         double t = axisDirection.dotProduct(point.subtract(axis.getHead()));
         // o =      p0 + t dot v
-        Point projectionPoint;
+        Point o; //projectionPoint
         if (Util.isZero(t))
-            projectionPoint = axis.getHead();
+            o = axis.getHead();
         else
-            projectionPoint = axis.getHead().add(axisDirection.scale(t));// getpoint
+            o = axis.getPoint(t);
         // n = normalize( p - o )
-        return point.subtract(projectionPoint).normalize();
+        return point.subtract(o).normalize();
     }
 
     //     if (Util.isZero(t))
