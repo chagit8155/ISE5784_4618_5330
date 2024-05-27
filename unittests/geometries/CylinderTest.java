@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CylinderTest {
 
     /**
-     * Test method for {@link Cylinder#getNormal(Point)}.
+     * Test method for {@link geometries.Cylinder#getNormal(Point)}.
      */
     @Test
     void getNormal() {

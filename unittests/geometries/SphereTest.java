@@ -82,7 +82,11 @@ class SphereTest {
 
         // TC12: Ray starts at sphere and goes outside (0 points)
         Ray onSphereOutsideRay = new Ray(onSpherePoint, v.scale(-1));
-        assertNull(sphere.findIntersections(onSphereOutsideRay), "Ray starts on sphere and goes outside");
+    //    assertNull(sphere.findIntersections(onSphereOutsideRay), "Ray starts on sphere and goes outside");
+        assertNull(sphere.findIntersections(new Ray(new Point(2,0,0), new Vector(1,0,0))),
+                "Ray starts at sphere and goes outside");
+
+
 
         // **** Group: Ray's line goes through the center
         // TC13: Ray starts before the sphere (2 points)
