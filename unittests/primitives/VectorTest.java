@@ -134,7 +134,7 @@ class VectorTest {
     }
 
     /**
-     * Test method for {@link Vector#normalize()}.
+     * Test method for {@link primitives.Vector#normalize()}.
      */
     @Test
     void testNormalize() {

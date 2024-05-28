@@ -10,13 +10,13 @@ import static primitives.Util.isZero;
 
 public class Camera implements Cloneable {
     private Point location;
-    private Vector right;
-    private Vector to;
-    private Vector up;
+    private Vector vRight;
+    private Vector vTo;
+    private Vector vUp;
     //view plane
-    private double height = 0;
-    private double width = 0;
-    private double distance = 0;
+    private double height = 0d;
+    private double width = 0d;
+    private double distance = 0d;
 
     /**
      * @return the height of the view plane
@@ -40,7 +40,7 @@ public class Camera implements Cloneable {
     }
 
     /**
-     * Static method to get a new Builder instance.
+     * Static method vTo get a new Builder instance.
      *
      * @return a new Builder instance
      */
@@ -55,11 +55,10 @@ public class Camera implements Cloneable {
      * @param nY the number of rows (height)
      * @param j  the column index of the pixel
      * @param i  the row index of the pixel
-     * @return the constructed ray through the specified pixel
+     * @return the constructed ray through the specified center pixel
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
-        // Method implementation will be added later
-        return null;
+       return null;
     }
 
     public static class Builder {
@@ -90,9 +89,9 @@ public class Camera implements Cloneable {
             if (!isZero(to.dotProduct(up))) {
                 throw new IllegalArgumentException("Direction vectors must be orthogonal");
             }
-            camera.to = to.normalize();
-            camera.up = up.normalize();
-            camera.right = to.crossProduct(up).normalize();
+            camera.vTo = to.normalize();
+            camera.vUp = up.normalize();
+            camera.vRight = to.crossProduct(up).normalize();
             return this;
         }
 
@@ -115,12 +114,12 @@ public class Camera implements Cloneable {
 
 
         /**
-         * Sets the distance from the camera to the view plane.
+         * Sets the distance from the camera vTo the view plane.
          *
-         * @param distance the distance from the camera to the view plane
+         * @param distance the distance from the camera vTo the view plane
          * @return the current Builder instance
          */
-        public Builder setVpDistance(double distance){
+        public Builder setVpDistance(double distance) {
             if (distance <= 0) {
                 throw new IllegalArgumentException("View plane distance must be positive");
             }
@@ -135,25 +134,26 @@ public class Camera implements Cloneable {
          * @return the constructed Camera instance
          * @throws MissingResourceException if any required field is missing
          */
-        public Camera build(){
+        public Camera build() {
             ////
+            final String missing = "Missing rendering data";
             if (camera.location == null) {
-                throw new MissingResourceException("Missing rendering data", "Camera", "location");
+                throw new MissingResourceException(missing, "Camera", "location");
             }
-            if (camera.to == null) {
-                throw new MissingResourceException("Missing rendering data", "Camera", "to");
+            if (camera.vTo == null) {
+                throw new MissingResourceException(missing, "Camera", "vTo");
             }
-            if (camera.up == null) {
-                throw new MissingResourceException("Missing rendering data", "Camera", "up");
+            if (camera.vUp == null) {
+                throw new MissingResourceException(missing, "Camera", "vUp");
             }
             if (camera.width == 0) {
-                throw new MissingResourceException("Missing rendering data", "Camera", "width");
+                throw new MissingResourceException(missing, "Camera", "width");
             }
             if (camera.height == 0) {
-                throw new MissingResourceException("Missing rendering data", "Camera", "height");
+                throw new MissingResourceException(missing, "Camera", "height");
             }
             if (camera.distance == 0) {
-                throw new MissingResourceException("Missing rendering data", "Camera", "distance");
+                throw new MissingResourceException(missing, "Camera", "distance");
             }
             return (Camera) camera.clone();
         }
