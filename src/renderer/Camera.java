@@ -58,7 +58,20 @@ public class Camera implements Cloneable {
      * @return the constructed ray through the specified center pixel
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
-       return null;
+        Point pc = location.add(vTo.scale(distance));
+        double rY = height / nY;
+        double rX = width / nX;
+        double yI = -(i - (nY - 1) / 2.0) * rY;
+        double xJ = (j - (nX - 1) / 2.0) * rX;
+        Point pIJ = pc;
+        if (xJ != 0) {
+            pIJ = pIJ.add(vRight.scale(xJ));
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(vUp.scale(yI));
+        }
+        Vector vIJ = pIJ.subtract(location);
+        return new Ray(location, vIJ);
     }
 
     public static class Builder {
