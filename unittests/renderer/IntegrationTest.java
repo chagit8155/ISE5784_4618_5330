@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testing Integration Camera Class
- *
  */
 class IntegrationTest {
 
@@ -23,24 +22,24 @@ class IntegrationTest {
     void testSphere() {
 
         //01: Small Sphere centered at (0,0,-3) with radius 1
-        Sphere sphere=new Sphere(1, new Point(0,0,-3));
+        Sphere sphere = new Sphere(1, new Point(0, 0, -3));
         checkFunc(sphere, Point.ZERO, 2);
 
         //02: Large Sphere centered at (0,0,-2.5) with radius 2.5
-        sphere=new Sphere(2.5, new Point(0,0,-2.5));
-        checkFunc(sphere, new Point(0,0,0.5), 18);
+        sphere = new Sphere(2.5, new Point(0, 0, -2.5));
+        checkFunc(sphere, new Point(0, 0, 0.5), 18);
 
         //03: Medium Sphere centered at (0,0,-2) with radius 2
-        sphere=new Sphere(2, new Point(0,0,-2));
-        checkFunc(sphere, new Point(0,0,0.5), 10);
+        sphere = new Sphere(2, new Point(0, 0, -2));
+        checkFunc(sphere, new Point(0, 0, 0.5), 10);
 
         //04: Large Sphere centered at (0,0,-1) with radius 4
-        sphere=new Sphere(4, new Point(0,0,-1));
+        sphere = new Sphere(4, new Point(0, 0, -1));
         checkFunc(sphere, Point.ZERO, 9);
 
         //05: Small Sphere centered at (0,0,1) with radius 0.5
-        sphere=new Sphere(0.5, new Point(0,0,1));
-        checkFunc(sphere, Point.ZERO , 0);
+        sphere = new Sphere(0.5, new Point(0, 0, 1));
+        checkFunc(sphere, Point.ZERO, 0);
 
 
     }
@@ -52,12 +51,12 @@ class IntegrationTest {
     void testTriangle() {
 
         //01: Small Triangle with vertices at (0,1,-2), (1,-1,-2), (-1,-1,-2)
-        Triangle triangle=new Triangle(new Point(0,1,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
-        checkFunc(triangle, Point.ZERO , 1);
+        Triangle triangle = new Triangle(new Point(0, 1, -2), new Point(1, -1, -2), new Point(-1, -1, -2));
+        checkFunc(triangle, Point.ZERO, 1);
 
         //02: Large Triangle with vertices at (0,20,-2), (1,-1,-2), (-1,-1,-2)
-        triangle=new Triangle(new Point(0,20,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
-        checkFunc(triangle, Point.ZERO , 2);
+        triangle = new Triangle(new Point(0, 20, -2), new Point(1, -1, -2), new Point(-1, -1, -2));
+        checkFunc(triangle, Point.ZERO, 2);
 
     }
 
@@ -68,42 +67,41 @@ class IntegrationTest {
     void testPlane() {
 
         //01: Plane with point (0, 0, -3) and normal vector (0, 0, 1)
-        Plane plane=new Plane(new Point(0, 0, -3), new Vector(0, 0, 1));
-        checkFunc(plane, Point.ZERO , 9);
+        Plane plane = new Plane(new Point(0, 0, -3), new Vector(0, 0, 1));
+        checkFunc(plane, Point.ZERO, 9);
 
         //02: Plane with point (0, 0, -3) and normal vector (0, 0.2, -1)
-        plane=new Plane(new Point(0, 0, -3), new Vector(0, 0.2, -1));
-        checkFunc(plane, Point.ZERO , 9);
+        plane = new Plane(new Point(0, 0, -3), new Vector(0, 0.2, -1));
+        checkFunc(plane, Point.ZERO, 9);
 
         //03: Plane with point (0, 0, -3) and normal vector (0, 1, -1)
-        plane=new Plane(new Point(0, 0, -3), new Vector(0, 1, -1));
-        checkFunc(plane, Point.ZERO , 6);
+        plane = new Plane(new Point(0, 0, -3), new Vector(0, 1, -1));
+        checkFunc(plane, Point.ZERO, 6);
 
     }
 
     /**
      * Helper method to check the number of intersection points for a given geometry.
      *
-     * @param obj                 the intersectable geometry
-     * @param cameraLocation      the location of the camera
-     * @param numOfIntersections  the expected number of intersections
+     * @param obj                the intersectable geometry
+     * @param cameraLocation     the location of the camera
+     * @param numOfIntersections the expected number of intersections
      */
 
-    void checkFunc(Intersectable obj, Point cameraLocation, int numOfIntersections){
+    void checkFunc(Intersectable obj, Point cameraLocation, int numOfIntersections) {
 
-        Camera camera=Camera.getBuilder().setLocation(cameraLocation)
-                .setDirection(new Vector(0,0,-1),new Vector(0,-1,0))
-                .setVpSize(3d,3d).setVpDistance(1d).build();
+        Camera camera = Camera.getBuilder().setLocation(cameraLocation)
+                .setDirection(new Vector(0, 0, -1), new Vector(0, -1, 0))
+                .setVpSize(3d, 3d).setVpDistance(1d).build();
         Ray ray;
-
         int counter = 0;
-        for(int i=0; i<3; i++)
-            for (int j=0; j<3; j++) {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++) {
                 ray = camera.constructRay(3, 3, j, i);
-                List<Point> temp=obj.findIntersections(ray);
-                if(temp!=null)
-                    counter+=temp.size();
+                List<Point> temp = obj.findIntersections(ray);
+                if (temp != null)
+                    counter += temp.size();
             }
-        assertEquals( numOfIntersections,counter,"constructRay does not work correctly");
+        assertEquals(numOfIntersections, counter, "constructRay does not work correctly");
     }
 }

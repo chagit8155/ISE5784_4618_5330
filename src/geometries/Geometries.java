@@ -14,11 +14,11 @@ public class Geometries implements Intersectable {
     }
 
     public Geometries(Intersectable... geometries) {
-
+        add(geometries);
     }
 
     public void add(Intersectable... geometries) {
-
+        this.geometries.addAll(List.of(geometries));
     }
 
     @Override

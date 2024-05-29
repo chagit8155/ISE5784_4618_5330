@@ -62,12 +62,16 @@ public class Sphere extends RadialGeometry {
         // Returning intersection points, ensuring that only those intersected by the
         // ray are returned.
         double thInside = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(dPerpendicular, 2));
+
         if (alignZero(tmBase - thInside) > 0 && alignZero(tmBase + thInside) > 0) // 2 points
             return List.of(ray.getPoint(tmBase - thInside), ray.getPoint(tmBase + thInside));
+
         else if (tmBase - thInside > 0) // 1 point
             return List.of(ray.getPoint(tmBase - thInside));
+
         else if (tmBase + thInside > 0) // 1 point
             return List.of(ray.getPoint(tmBase + thInside));
+
         return null; // else 0 points
     }
 
