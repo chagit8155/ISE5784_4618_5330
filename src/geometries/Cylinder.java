@@ -31,7 +31,7 @@ public class Cylinder extends Tube {
     @Override
     public Vector getNormal(Point point) {
 
-        //TODO: לקרא לסופר
+        //לקרא לסופר
         Point p0 = axis.getHead();
         Vector v = axis.getDirection();
 
@@ -55,6 +55,9 @@ public class Cylinder extends Tube {
         return point.subtract(p1).normalize();
 
     }
+
+
+
 //        private boolean isPointOnPlane(Point point, Point planePoint, Vector planeNormal) {
 //            return planeNormal.dotProduct(point.subtract(planePoint)) == 0;
 //        }

@@ -2,6 +2,7 @@ package renderer;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 import java.util.MissingResourceException;
@@ -18,6 +19,7 @@ public class Camera implements Cloneable {
     private double width = 0d;
     private double distance = 0d;
 
+    //cror
     /**
      * @return the height of the view plane
      */
@@ -64,12 +66,9 @@ public class Camera implements Cloneable {
         double yI = -(i - (nY - 1) / 2.0) * rY;
         double xJ = (j - (nX - 1) / 2.0) * rX;
         Point pIJ = pc;
-        if (xJ != 0) {
-            pIJ = pIJ.add(vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(vUp.scale(yI));
-        }
+        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(-xJ));
+        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
+
         Vector vIJ = pIJ.subtract(location);
         return new Ray(location, vIJ);
     }
@@ -148,7 +147,7 @@ public class Camera implements Cloneable {
          * @throws MissingResourceException if any required field is missing
          */
         public Camera build() {
-            ////
+            ////try ct
             final String missing = "Missing rendering data";
             if (camera.location == null) {
                 throw new MissingResourceException(missing, "Camera", "location");
@@ -172,13 +171,12 @@ public class Camera implements Cloneable {
         }
     }
 
-    /**
-     * Creates and returns a copy of this object.
-     *
-     * @return a clone of this instance
-     */
+
     @Override
     protected Camera clone() {
+        //      Creates and returns a copy of this object.
+//    return a clone of this instance
+//
         try {
             return (Camera) super.clone();
         } catch (CloneNotSupportedException e) {
