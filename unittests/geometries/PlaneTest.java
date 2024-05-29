@@ -35,17 +35,17 @@ class PlaneTest {
         // ============ Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here - using a quad
         Point[] pts =
-                {new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0), new Point(-1, 1, 1)};
-        Polygon pol = new Polygon(pts);
+                {new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0)};
+        Plane p = new Plane(pts[0], pts[1],pts[2]);
         // ensure there are no exceptions
-        assertDoesNotThrow(() -> pol.getNormal(new Point(0, 0, 1)), "");
+        assertDoesNotThrow(() -> p.getNormal(new Point(0, 0, 1)), "");
         // generate the test result
-        Vector result = pol.getNormal(new Point(0, 0, 1));
+        Vector result = p.getNormal(new Point(0, 0, 1));
         // ensure |result| = 1
         assertEquals(1, result.length(), DELTA, "Plane's normal is not a unit vector");
         // ensure the result is orthogonal to all the plane
         for (int i = 0; i < 3; ++i)
-            assertEquals(0d, result.dotProduct(pts[i].subtract(pts[i == 0 ? 3 : i - 1])), DELTA,
+            assertEquals(0d, result.dotProduct(pts[i].subtract(pts[i == 0 ? 2 : i - 1])), DELTA,           //חיסור בין שתי נקודות נותן את הווקטור שמייצג את הצלע של המשולש.
                     "Plane's normal is not orthogonal to one of the edges");
     }
 

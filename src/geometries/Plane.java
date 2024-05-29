@@ -29,6 +29,8 @@ public class Plane implements Geometry {
      */
     public Plane(Point p1, Point p2, Point p3) {
         // Calculate the normal vector to the plane using the given points
+        //v1 = p2 - p1
+        //v2 = p3 - p1
         // normalize(  v1            *             v2 )
         normal = p1.subtract(p2).crossProduct(p1.subtract(p3)).normalize();
         // this.normal = null; //  stage 1
@@ -62,15 +64,24 @@ public class Plane implements Geometry {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        Vector v=ray.getDirection();
-        double nv=normal.dotProduct(v);
-        if (isZero(nv))
+        Vector v = ray.getDirection();
+        double nv = normal.dotProduct(v);
+
+        // If the ray is parallel to the plane (normal is orthogonal to direction), there are no intersections
+        if (Util.isZero(nv))
             return null;
-        if(point.equals(ray.getHead()))
+
+        // If the ray starts at the plane's reference point, return null
+        if (point.equals(ray.getHead()))
             return null;
-        double t=alignZero((normal.dotProduct((point.subtract(ray.getHead()))))/(nv));
-        if(t>0)
+
+        // Calculate the intersection point t using the plane equation
+        double t = Util.alignZero(normal.dotProduct(point.subtract(ray.getHead())) / nv);
+
+        // If t is positive, return the intersection point; otherwise, return null
+        if (t > 0)
             return List.of(ray.getPoint(t));
         return null;
     }
+
 }

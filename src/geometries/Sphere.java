@@ -32,7 +32,6 @@ public class Sphere extends RadialGeometry {
     @Override
     public Vector getNormal(Point point) {
 
-
         // normalize(  center  -  p )
         return point.subtract(center).normalize();
 
@@ -42,34 +41,34 @@ public class Sphere extends RadialGeometry {
     public List<Point> findIntersections(Ray ray) {
         //(-1,0,0) (3,1,0)
         Point p0 = ray.getHead();
-        Vector dir = ray.getDirection();
+        Vector vDir = ray.getDirection();
 
         // Deals with case where ray starts from the center of the sphere
-        if (p0.equals(center))
+        if (p0.equals(center)) //one point
             return List.of(ray.getPoint(this.radius));
 
         // Finding the hypotenuse, base and perpendicular of the triangle formed by
         // ray's starting point, the center of the sphere and the intersection point of
         // the ray and the perpendicular line crossing the sphere's center.
-        Vector hypotenuse = this.center.subtract(p0);
-        double base = dir.dotProduct(hypotenuse);
-        double perpendicular = Math.sqrt(hypotenuse.dotProduct(hypotenuse) - base * base);
+        Vector uHypotenuse = this.center.subtract(p0);
+        double tmBase = vDir.dotProduct(uHypotenuse);
+        double dPerpendicular = Math.sqrt(uHypotenuse.dotProduct(uHypotenuse) - tmBase * tmBase);
 
         // Dealing with a case in which the ray is perpendicular to the sphere at the
         // intersection point.
-        if (perpendicular == this.radius)
+        if (dPerpendicular == this.radius) // 0 points
             return null;
 
         // Returning intersection points, ensuring that only those intersected by the
         // ray are returned.
-        double inside = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(perpendicular, 2));
-        if (alignZero(base - inside) > 0 && alignZero(base + inside) > 0)
-            return List.of(ray.getPoint(base - inside), ray.getPoint(base + inside));
-        else if (base - inside > 0)
-            return List.of(ray.getPoint(base - inside));
-        else if (base + inside > 0)
-            return List.of(ray.getPoint(base + inside));
-        return null;
+        double thInside = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(dPerpendicular, 2));
+        if (alignZero(tmBase - thInside) > 0 && alignZero(tmBase + thInside) > 0) // 2 points
+            return List.of(ray.getPoint(tmBase - thInside), ray.getPoint(tmBase + thInside));
+        else if (tmBase - thInside > 0) // 1 point
+            return List.of(ray.getPoint(tmBase - thInside));
+        else if (tmBase + thInside > 0) // 1 point
+            return List.of(ray.getPoint(tmBase + thInside));
+        return null; // else 0 points
     }
 
 }

@@ -12,7 +12,6 @@ class CylinderTest {
      */
     @Test
     void getNormal() {
-
         Ray axisRay = new Ray(new Point(1, 2, 3), new Vector(0, 0, 1));
         Cylinder cylinder = new Cylinder(1, axisRay, 5);
 

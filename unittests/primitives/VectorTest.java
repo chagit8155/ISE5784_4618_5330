@@ -16,7 +16,7 @@ class VectorTest {
 //TODO: לחלק את הבדיקות למקרי קצה ומחלקות שקילות
 
     /**
-     * Test method for {@link Vector#Vector(double, double, double)}.
+     * Test method for {@link primitives.Vector#Vector(double, double, double)}.
      */
     @Test
     public void testConstructor() {
@@ -26,7 +26,7 @@ class VectorTest {
     }
 
     /**
-     * Test method for {@link Vector#Vector(Double3)}.
+     * Test method for {@link primitives.Vector#Vector(Double3)}.
      */
     @Test
     public void testConstructor2() {
@@ -35,8 +35,12 @@ class VectorTest {
         assertThrows(IllegalArgumentException.class, () -> new Vector(Double3.ZERO), "Constructed a zero vector");
     }
 
+    @Test
+    public void testScalar(){
+        //TODO:מגיע סקלר אפס
+    }
     /**
-     * Test method for {@link Vector#add(Vector)}.
+     * Test method for {@link primitives.Vector#add(Vector)}.
      */
     //איפה אני עושה את הבדיקות של חיסור בוקטור כי הרי אין לוקטור פונק חיסור
     @Test
@@ -45,6 +49,7 @@ class VectorTest {
         // TC01: Test that the new vector is the right one
         assertEquals(v1Opposite, v1.add(v2), "add(): Vector + Vector does not work correctly");
 
+    //    TODO: להוסיף בדיקה לווקטורים מנוגדים
         // =============== Boundary Values Tests ==================
         // TC01: Test opposite direction vector throws exception
         assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite), "add() Vector + itself does not throw an exception");
@@ -52,21 +57,22 @@ class VectorTest {
         assertThrows(Exception.class, () -> v1.add(v1Opposite), "add() Vector + itself throws wrong exception");
 
     }
-//TODO:
 
     /**
      * Test method for {@link primitives.Vector#subtract(Point)}.
      */
     @Test
     void testSubtract() {
-        assertThrows(IllegalArgumentException.class, () -> v1.subtract(v1), "subtract() Vector - itself does not throw an exception"); //?
-        assertThrows(IllegalArgumentException.class, () -> v1.add(v1Opposite), "subtract() Vector + itself throws wrong exception");
+
         assertEquals(v1Opposite, v1.add(v2), "subtract(): Vector + Vector does not work correctly");
+        //    TODO:לסדר למחלקןת שקילות וקצה
+        assertThrows(IllegalArgumentException.class, () -> v1.subtract(v1), "subtract() Vector - itself does not throw an exception"); //?
+
 
     }
 
     /**
-     * Test method for {@link Vector#dotProduct(Vector)}.
+     * Test method for {@link primitives.Vector#dotProduct(Vector)}.
      */
     @Test
     void testDotProduct() {
@@ -83,7 +89,7 @@ class VectorTest {
         // ================== Boundary Values Tests ==================
         // TC03: Test orthogonal vectors
         assertEquals(0, v1.dotProduct(v3), DELTA, " dotProduct(): for orthogonal vectors is not zero");
-        assertEquals(0, v1.dotProduct(v2) + 28, DELTA, " dotProduct(): for orthogonal vectors is not zero");
+
 
         // TC04: Text dotProduct when one of the vectors is the unit vector
         Vector v5 = new Vector(1, 0, 0);
@@ -106,24 +112,25 @@ class VectorTest {
         assertEquals(0, vr.dotProduct(v3), "crossProduct() result is not orthogonal to 2nd operand");
 
         // =============== Boundary Values Tests ==================
-        // TC11: test zero vector from cross-product of parallel vectors
+        // TC3: test zero vector from cross-product of parallel vectors
         assertThrows(IllegalArgumentException.class, () -> v1.crossProduct(v2),
                 "crossProduct() for parallel vectors does not throw an exception");
 
     }
 
     /**
-     * Test method for {@link Vector#lengthSquared()}.
+     * Test method for {@link primitives.Vector#lengthSquared()}.
      */
     @Test
     void testLengthSquared() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Test length squared
-        assertEquals(0, v4.lengthSquared() - 9, DELTA, "lengthSquared() wrong length");
+        assertEquals(9, v4.lengthSquared() , DELTA, "lengthSquared() wrong length squared");
     }
 
+
     /**
-     * Test method for {@link Vector#length()}.
+     * Test method for {@link primitives.Vector#length()}.
      */
     @Test
     void testLength() {
@@ -138,6 +145,7 @@ class VectorTest {
      */
     @Test
     void testNormalize() {
+       // TODO: הערות
         Vector v = new Vector(0, 3, 4);
         Vector n = v.normalize();
         // ============ Equivalence Partitions Tests ==============

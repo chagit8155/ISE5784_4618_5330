@@ -36,23 +36,39 @@ public class Triangle extends Polygon {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
+        // Find intersections with the plane containing the triangle
         List<Point> intersections = plane.findIntersections(ray);
-        if (intersections == null)
+        if (intersections == null) {
+            // If there is no intersection with the plane, there is no intersection with the triangle
             return null;
+        }
+
+        // Vectors from ray head to each vertex of the triangle
         Vector v1 = vertices.get(0).subtract(ray.getHead());
         Vector v2 = vertices.get(1).subtract(ray.getHead());
         Vector v3 = vertices.get(2).subtract(ray.getHead());
+
+        // Normals to the planes formed by the triangle's edges and the ray
         Vector n1 = (v1.crossProduct(v2)).normalize();
         Vector n2 = (v2.crossProduct(v3)).normalize();
         Vector n3 = (v3.crossProduct(v1)).normalize();
+
+        // Dot products of the ray direction with the edge normals
         double vn1 = ray.getDirection().dotProduct(n1);
         double vn2 = ray.getDirection().dotProduct(n2);
         double vn3 = ray.getDirection().dotProduct(n3);
 
-        if (isZero(vn1) || isZero(vn2) || isZero(vn3))
+        // If any of the dot products are zero, the ray lies on the edge and does not intersect the triangle
+        if (isZero(vn1) || isZero(vn2) || isZero(vn3)) {
             return null;
-        if ((vn1 > 0 && vn2 > 0 && vn3 > 0) || (vn1 < 0 && vn2 < 0 && vn3 < 0))
+        }
+
+        // If all dot products have the same sign, the intersection point is inside the triangle
+        if ((vn1 > 0 && vn2 > 0 && vn3 > 0) || (vn1 < 0 && vn2 < 0 && vn3 < 0)) {
             return intersections;
+        }
+
+        // If the intersection point is outside the triangle
         return null;
     }
 

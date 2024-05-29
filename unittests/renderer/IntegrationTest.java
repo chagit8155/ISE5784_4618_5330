@@ -1,70 +1,109 @@
 package renderer;
 
-import org.junit.jupiter.api.Test;
-import primitives.*;
 import geometries.*;
-import renderer.Camera;
+import org.junit.jupiter.api.Test;
+import primitives.Point;
+import primitives.Ray;
+import primitives.Vector;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration tests for Camera ray construction and geometries intersection.
+ * Testing Integration Camera Class
+ *
  */
-public class IntegrationTest {
+class IntegrationTest {
 
-    private static final int Nx = 3;
-    private static final int Ny = 3;
-
-    private Camera createCamera() {
-        return Camera.getBuilder()
-                .setLocation(new Point(0, 0, 0))
-                .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVpSize(3, 3)
-                .setVpDistance(1)
-                .build();
-    }
-
-
+    /**
+     * Test intersections of rays from the camera with Sphere geometries.
+     */
     @Test
-    public void testSphereIntersections() {
-        Camera camera = createCamera();
-        Sphere sphere = new Sphere(1, new Point(0, 0, -3));
+    void testSphere() {
 
-        int intersections = countIntersections(camera, sphere);
-        assertEquals(2, intersections, "Wrong number of intersections with sphere");
+        //01: Small Sphere centered at (0,0,-3) with radius 1
+        Sphere sphere=new Sphere(1, new Point(0,0,-3));
+        checkFunc(sphere, Point.ZERO, 2);
+
+        //02: Large Sphere centered at (0,0,-2.5) with radius 2.5
+        sphere=new Sphere(2.5, new Point(0,0,-2.5));
+        checkFunc(sphere, new Point(0,0,0.5), 18);
+
+        //03: Medium Sphere centered at (0,0,-2) with radius 2
+        sphere=new Sphere(2, new Point(0,0,-2));
+        checkFunc(sphere, new Point(0,0,0.5), 10);
+
+        //04: Large Sphere centered at (0,0,-1) with radius 4
+        sphere=new Sphere(4, new Point(0,0,-1));
+        checkFunc(sphere, Point.ZERO, 9);
+
+        //05: Small Sphere centered at (0,0,1) with radius 0.5
+        sphere=new Sphere(0.5, new Point(0,0,1));
+        checkFunc(sphere, Point.ZERO , 0);
+
+
     }
 
+    /**
+     * Test intersections of rays from the camera with Triangle geometries.
+     */
     @Test
-    public void testPlaneIntersections() {
-        Camera camera = createCamera();
-        Plane plane = new Plane(new Point(0, 0, -3), new Vector(0, 0, 1));
+    void testTriangle() {
 
-        int intersections = countIntersections(camera, plane);
-        assertEquals(9, intersections, "Wrong number of intersections with plane");
+        //01: Small Triangle with vertices at (0,1,-2), (1,-1,-2), (-1,-1,-2)
+        Triangle triangle=new Triangle(new Point(0,1,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
+        checkFunc(triangle, Point.ZERO , 1);
+
+        //02: Large Triangle with vertices at (0,20,-2), (1,-1,-2), (-1,-1,-2)
+        triangle=new Triangle(new Point(0,20,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
+        checkFunc(triangle, Point.ZERO , 2);
+
     }
 
+    /**
+     * Test intersections of rays from the camera with Plane geometries.
+     */
     @Test
-    public void testTriangleIntersections() {
-        Camera camera = createCamera();
-        Triangle triangle = new Triangle(
-                new Point(0, 1, -2),
-                new Point(1, -1, -2),
-                new Point(-1, -1, -2));
+    void testPlane() {
 
-        int intersections = countIntersections(camera, triangle);
-        assertEquals(1, intersections, "Wrong number of intersections with triangle");
+        //01: Plane with point (0, 0, -3) and normal vector (0, 0, 1)
+        Plane plane=new Plane(new Point(0, 0, -3), new Vector(0, 0, 1));
+        checkFunc(plane, Point.ZERO , 9);
+
+        //02: Plane with point (0, 0, -3) and normal vector (0, 0.2, -1)
+        plane=new Plane(new Point(0, 0, -3), new Vector(0, 0.2, -1));
+        checkFunc(plane, Point.ZERO , 9);
+
+        //03: Plane with point (0, 0, -3) and normal vector (0, 1, -1)
+        plane=new Plane(new Point(0, 0, -3), new Vector(0, 1, -1));
+        checkFunc(plane, Point.ZERO , 6);
+
     }
 
-    private int countIntersections(Camera camera, Intersectable geometry) {
-        int count = 0;
-        for (int i = 0; i < Ny; i++) {
-            for (int j = 0; j < Nx; j++) {
-                Ray ray = camera.constructRay(Nx, Ny, j, i);
-                if (geometry.findIntersections(ray) != null) {
-                    count += geometry.findIntersections(ray).size();
-                }
+    /**
+     * Helper method to check the number of intersection points for a given geometry.
+     *
+     * @param obj                 the intersectable geometry
+     * @param cameraLocation      the location of the camera
+     * @param numOfIntersections  the expected number of intersections
+     */
+
+    void checkFunc(Intersectable obj, Point cameraLocation, int numOfIntersections){
+
+        Camera camera=Camera.getBuilder().setLocation(cameraLocation)
+                .setDirection(new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVpSize(3d,3d).setVpDistance(1d).build();
+        Ray ray;
+
+        int counter = 0;
+        for(int i=0; i<3; i++)
+            for (int j=0; j<3; j++) {
+                ray = camera.constructRay(3, 3, j, i);
+                List<Point> temp=obj.findIntersections(ray);
+                if(temp!=null)
+                    counter+=temp.size();
             }
-        }
-        return count;
+        assertEquals( numOfIntersections,counter,"constructRay does not work correctly");
     }
 }

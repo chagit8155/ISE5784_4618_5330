@@ -20,31 +20,27 @@ class TubeTest {
         // The direction of the tube's axis
         Vector tubeDirection = new Vector(1, 0, 0);
 
-        // The starting point of the tube's axis
-        Point tubeHead = new Point(0, 0, 0);
-
         // The axis of the tube
-        Ray axis = new Ray(tubeHead, tubeDirection);
-
-        // The radius of the tube
-        double radius = 1.0;
+        Ray axis = new Ray(Point.ZERO, new Vector(1, 0, 0));
 
         // Create the tube
-        Tube tube = new Tube(radius, axis);
+        Tube tube = new Tube(1, axis);
 
         // Calculate the normal vector at the point on the tube
-        Vector normalVector = tube.getNormal(pointOnTube);
+        Vector normal = tube.getNormal(pointOnTube);
 
         // Check that the normal vector is perpendicular to the tube's axis direction vector,
         // i.e., their dot product is 0
-        assertEquals(0, normalVector.dotProduct(tubeDirection), "Incorrect calculation of Tube's normal"); // אם המכפלה הסקלרית בן כיוון הצינור לנורמל שהתקבל שווה אפס אז הוא אכן מאונך
-
+        assertEquals(0, normal.dotProduct(tubeDirection), "Incorrect calculation of Tube's normal"); // אם המכפלה הסקלרית בן כיוון הצינור לנורמל שהתקבל שווה אפס אז הוא אכן מאונך
 
         // =============== Boundary Values Tests ==================
-
         //TC02: 1 extreme case when the vector (p-p0) is orthogonal to v
-        //TODO :
+
+        Point orthogonalPoint = new Point(0, 1, 0);
+        Vector orthogonalNormal = tube.getNormal(orthogonalPoint);
+        assertEquals(0, orthogonalNormal.dotProduct(tubeDirection), "Incorrect calculation of Tube's normal for orthogonal point");
     }
+
 
 
     @Test

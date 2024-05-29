@@ -46,7 +46,7 @@ public class Vector extends Point {
     }
 
     @Override
-    public Vector subtract(Point p2) { //?
+    public Vector subtract(Point p2) {
         return super.subtract(p2);
     }
 
@@ -69,6 +69,7 @@ public class Vector extends Point {
     public double dotProduct(Vector other) {
         return xyz.d1 * other.xyz.d1 + xyz.d2 * other.xyz.d2 + xyz.d3 * other.xyz.d3;
     }
+
 
     /**
      * Computes the cross product of this vector with another vector.
