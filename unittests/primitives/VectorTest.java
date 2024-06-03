@@ -35,6 +35,9 @@ class VectorTest {
         assertThrows(IllegalArgumentException.class, () -> new Vector(Double3.ZERO), "Constructed a zero vector");
     }
 
+    /**
+     * Test method for {@link primitives.Vector#scale(double)}.
+     */
     @Test
     public void testScalar(){
         Vector v1 = new Vector(1, 3, 5);
