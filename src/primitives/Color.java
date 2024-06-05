@@ -37,7 +37,8 @@ public class Color {
      * @param b Blue component
      */
     public Color(double r, double g, double b) {
-        if (r < 0 || g < 0 || b < 0) throw new IllegalArgumentException("Negative color component is illegal");
+        if (r < 0 || g < 0 || b < 0)
+            throw new IllegalArgumentException("Negative color component is illegal");
         rgb = new Double3(r, g, b);
     }
 
@@ -73,7 +74,13 @@ public class Color {
         int ir = (int) rgb.d1;
         int ig = (int) rgb.d2;
         int ib = (int) rgb.d3;
-        return new java.awt.Color(ir > 255 ? 255 : ir, ig > 255 ? 255 : ig, ib > 255 ? 255 : ib);
+
+        // Clamp the values to the range [0, 255]
+        ir = Math.max(0, Math.min(255, ir));
+        ig = Math.max(0, Math.min(255, ig));
+        ib = Math.max(0, Math.min(255, ib));
+
+        return new java.awt.Color(ir, ig, ib);
     }
 
     /**

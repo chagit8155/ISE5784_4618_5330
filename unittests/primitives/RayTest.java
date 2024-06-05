@@ -28,6 +28,7 @@ class RayTest {
         Ray ray = new Ray(new Point(0, 0, 0), new Vector(1, 0, 0));
 
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: The middle point is the closest to the ray's origin
         List<Point> points = List.of(
                 new Point(1, 2, 3),

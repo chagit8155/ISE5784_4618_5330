@@ -24,7 +24,7 @@ public class RenderTests {
      * Camera builder of the tests
      */
     private final Camera.Builder camera = Camera.getBuilder()
-            //  .setRayTracer(new SimpleRayTracer(scene))
+            .setRayTracer(new SimpleRayTracer(scene))
             .setLocation(Point.ZERO).setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
             .setVpDistance(100)
             .setVpSize(500, 500);
@@ -45,13 +45,16 @@ public class RenderTests {
         scene.setAmbientLight(new AmbientLight(new Color(255, 191, 191), Double3.ONE))
                 .setBackground(new Color(75, 127, 90));
 
-        // right
+//        // right
         camera
                 .setImageWriter(new ImageWriter("base render test", 1000, 1000))
-                .build()
-                .renderImage()
-                .printGrid(100, new Color(YELLOW))
-                .writeToImage();
+                .renderImage() //color the image
+                .printGrid(100, new Color(YELLOW)) //reshet
+                .build();//
+        camera.writeToImage();
+
+
+
     }
 
     /**
@@ -64,12 +67,12 @@ public class RenderTests {
         // ...
         // NB: unit tests is not the correct place to put XML parsing code
 
-        camera
-                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
-                .build()
-                .renderImage()
-                .printGrid(100, new Color(YELLOW))
-                .writeToImage();
+//        camera
+//                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
+//                .build()
+//                .renderImage()
+//                .printGrid(100, new Color(YELLOW))
+//                .writeToImage();
     }
 }
 

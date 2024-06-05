@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+import scene.Scene;
 
 import java.util.List;
 
@@ -90,9 +91,12 @@ class IntegrationTest {
 
     void checkFunc(Intersectable obj, Point cameraLocation, int numOfIntersections) {
 
-        Camera camera = Camera.getBuilder().setLocation(cameraLocation)
+        Camera camera = Camera.getBuilder()
+                .setLocation(cameraLocation)
                 .setDirection(new Vector(0, 0, -1), new Vector(0, -1, 0))
-                .setVpSize(3d, 3d).setVpDistance(1d).build();
+                .setVpSize(3d, 3d).setVpDistance(1d)
+                .setImageWriter(new ImageWriter("temp",300,300))
+                .setRayTracer(new SimpleRayTracer(new Scene("temp"))).build();
         Ray ray;
         int counter = 0;
         for (int i = 0; i < 3; i++)

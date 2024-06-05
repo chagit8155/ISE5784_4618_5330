@@ -40,6 +40,9 @@ public class Scene {
         this.name = name;
     }
 
+
+
+//  ********** Setter *******************
     /**
      * Sets the background color of the scene
      *
