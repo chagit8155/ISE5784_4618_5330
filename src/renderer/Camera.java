@@ -134,7 +134,39 @@ public class Camera implements Cloneable {
             return (Camera) camera.clone();
         }
 
+        /**
+         * Casts a ray through the specified pixel.
+         *
+         * @param nX the number of pixels in the x direction
+         * @param nY the number of pixels in the y direction
+         * @param i  the x index of the pixel
+         * @param j  the y index of the pixel
+         */
+        private void castRay(int nX, int nY, int i, int j) {
+            Ray ray = camera.constructRay(nX, nY, i, j);
+            Color color = camera.rayTracer.traceRay(ray);
+            camera.imageWriter.writePixel(i, j, color);
+        }
 
+
+        /**
+         * Renders the image by casting rays through each pixel and returns the camera instance.
+         *
+         * @return the Camera instance after rendering the image.
+         * @throws UnsupportedOperationException if the ImageWriter or RayTracer is not initialized.
+         */
+        public Builder renderImage() {
+            if (camera.imageWriter == null || camera.rayTracer == null) {
+                throw new UnsupportedOperationException("ImageWriter or RayTracer is not initialized");
+            }
+
+            for (int i = 0; i < camera.imageWriter.getNx(); i++) {
+                for (int j = 0; j < camera.imageWriter.getNy(); j++) {
+                    castRay(camera.imageWriter.getNx(), camera.imageWriter.getNy(), i, j);
+                }
+            }
+            return this;
+        }
 
         /**
          * Prints a grid on the image with the specified interval and color.
