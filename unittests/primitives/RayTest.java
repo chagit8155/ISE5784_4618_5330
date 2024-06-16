@@ -35,12 +35,14 @@ class RayTest {
                 new Point(0.5, 0, 0), // This should be the closest point
                 new Point(2, 2, 2)
         );
-        assertEquals(new Point(0.5, 0, 0), ray.findClosestPoint(points), "TC01: The closest point is not found correctly");
+        assertEquals(new Point(0.5, 0, 0), ray.findClosestPoint(points),
+                "TC01: The closest point is not found correctly");
 
         // =============== Boundary Values Tests ==================
         // TC02: The list is empty
         points = List.of();
-        assertNull(ray.findClosestPoint(points), "TC02: The closest point for an empty list should be null");
+        assertNull(ray.findClosestPoint(points),
+                "TC02: The closest point for an empty list should be null");
 
         // TC03: The first point is the closest
         points = List.of(
@@ -48,7 +50,8 @@ class RayTest {
                 new Point(1, 2, 3),
                 new Point(2, 2, 2)
         );
-        assertEquals(new Point(0.5, 0, 0), ray.findClosestPoint(points), "TC03: The closest point is not found correctly when it's the first point");
+        assertEquals(new Point(0.5, 0, 0), ray.findClosestPoint(points),
+                "TC03: The closest point is not found correctly when it's the first point");
 
         // TC04: The last point is the closest
         points = List.of(
@@ -56,6 +59,7 @@ class RayTest {
                 new Point(2, 2, 2),
                 new Point(0.5, 0, 0) // This should be the closest point
         );
-        assertEquals(new Point(0.5, 0, 0), ray.findClosestPoint(points), "TC04: The closest point is not found correctly when it's the last point");
+        assertEquals(new Point(0.5, 0, 0), ray.findClosestPoint(points),
+                "TC04: The closest point is not found correctly when it's the last point");
     }
 }

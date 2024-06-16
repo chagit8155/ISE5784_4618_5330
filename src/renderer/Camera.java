@@ -92,7 +92,7 @@ public class Camera implements Cloneable {
         }
     }
 
-    //=================== Builder ======================
+    //======================================= Builder =============================================
 
     public static class Builder {
         private final Camera camera = new Camera();
@@ -188,12 +188,12 @@ public class Camera implements Cloneable {
         /**
          * Writes the image to a file.
          */
-        public void writeToImage() {
+        public void  writeToImage() {
             camera.imageWriter.writeToImage();
         }
 
 
-        // ***************** Setters **********************
+        // ******************************** Setters ********************************************
 
         /**
          * Sets the location of the camera.

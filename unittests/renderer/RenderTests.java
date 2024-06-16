@@ -50,9 +50,8 @@ public class RenderTests {
                 .setImageWriter(new ImageWriter("base render test", 1000, 1000))
                 .renderImage() //color the image
                 .printGrid(100, new Color(YELLOW)) //reshet
-                .build();//
+                .build();
         camera.writeToImage();
-
 
 
     }
