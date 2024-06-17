@@ -1,8 +1,6 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 
 import java.util.List;
 
@@ -32,12 +30,10 @@ public class Triangle extends Polygon {
     //בגופים גאומטרים לא צריך לזרוס את equals
 
 
-
-
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Find intersections with the plane containing the triangle
-        List<Point> intersections = plane.findIntersections(ray);
+        List<GeoPoint> intersections = this.plane.findGeoIntersectionsHelper(ray);
         if (intersections == null) {
             // If there is no intersection with the plane, there is no intersection with the triangle
             return null;
@@ -65,7 +61,7 @@ public class Triangle extends Polygon {
 
         // If all dot products have the same sign, the intersection point is inside the triangle
         if ((vn1 > 0 && vn2 > 0 && vn3 > 0) || (vn1 < 0 && vn2 < 0 && vn3 < 0)) {
-            return intersections;
+            return  List.of(new GeoPoint(this, intersections.get(0).point));
         }
 
         // If the intersection point is outside the triangle

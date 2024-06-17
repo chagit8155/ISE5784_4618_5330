@@ -48,8 +48,8 @@ public class Tube extends RadialGeometry {
 //    o=axis.getHead();
 //        else
 //    o=axis.getPoint(t);
-    @Override
-    public List<Point> findIntersections(Ray ray) {
+
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         return null;
     }
 }

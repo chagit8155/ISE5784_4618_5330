@@ -1,9 +1,7 @@
 package primitives;
 
-import geometries.Polygon;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VectorTest {

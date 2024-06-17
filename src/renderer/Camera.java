@@ -188,8 +188,9 @@ public class Camera implements Cloneable {
         /**
          * Writes the image to a file.
          */
-        public void  writeToImage() {
+        public Builder  writeToImage() {
             camera.imageWriter.writeToImage();
+            return this;
         }
 
 

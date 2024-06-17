@@ -6,8 +6,6 @@ import primitives.*;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-import static primitives.Util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -38,7 +36,7 @@ class SphereTest {
 
 
     /**
-     * Test method for {@link Sphere#findIntersections(Ray)}.
+     * Test method for {@link Intersectable#findGeoIntersectionsHelper(Ray)}.
      */
     @Test
     public void testFindIntersections() {
@@ -62,7 +60,7 @@ class SphereTest {
         // ============ Equivalence Partitions Tests ==============
 
         // TC01: Ray's line is outside the sphere (0 points)
-        assertNull(sphere.findIntersections(new Ray(p01, v110)), "Ray's line out of sphere");
+        assertNull(sphere.findGeoIntersectionsHelper(new Ray(p01, v110)), "Ray's line out of sphere");
 
         // TC02: Ray starts before and crosses the sphere (2 points)
         var exp = List.of(gp1, gp2);

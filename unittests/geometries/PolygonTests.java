@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
-
-import geometries.Polygon;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -24,7 +21,7 @@ public class PolygonTests {
     private final double DELTA = 0.000001;
 
     /**
-     * Test method for {@link geometries.Polygon#Polygon(primitives.Point...)}.
+     * Test method for {@link geometries.Polygon#Polygon(Point...)}.
      */
     @Test
     public void testConstructor() {
@@ -87,7 +84,7 @@ public class PolygonTests {
     }
 
     /**
-     * Test method for {@link geometries.Polygon#getNormal(primitives.Point)}.
+     * Test method for {@link geometries.Polygon#getNormal(Point)}.
      */
     @Test
     public void testGetNormal() {
@@ -109,7 +106,7 @@ public class PolygonTests {
     }
 
     /**
-     * Test method for {@link Polygon#findIntersections(Ray)}.
+     * Test method for {@link Intersectable#findGeoIntersectionsHelper(Ray)}.
      */
     @Test
     void findIntersections() {

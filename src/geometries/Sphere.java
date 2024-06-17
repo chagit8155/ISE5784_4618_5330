@@ -1,9 +1,9 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
+import static geometries.Intersectable.GeoPoint;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -35,6 +35,19 @@ public class Sphere extends RadialGeometry {
         // normalize(  center  -  p )
         return point.subtract(center).normalize();
 
+    }
+
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        List<Point> intersections = this.findIntersections(ray);
+//        if (intersections == null) {
+//            return null;
+//        }
+//
+//        Point point = intersections.get(0);
+//        return List.of(new GeoPoint(this, point));
+        return intersections == null ? null
+                : intersections.stream().map(point -> new GeoPoint(this,point)).toList();
     }
 
     @Override

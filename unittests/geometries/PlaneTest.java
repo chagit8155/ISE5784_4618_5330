@@ -50,7 +50,7 @@ class PlaneTest {
     }
 
     /**
-     * Test method for {@link  Plane#findIntersections(Ray)}.
+     * Test method for {@link  Intersectable#findGeoIntersectionsHelper(Ray)}.
      */
     @Test
     void findIntersections() {
@@ -70,37 +70,37 @@ class PlaneTest {
         assertEquals(exp, result1, "Ray starts outside the plane, not orthogonal, not paralal, cross the Plane");
 
         // TC02: Ray starts outside the plane, not orthogonal, not paralal, doesn't cross the Plane
-        assertNull(plane.findIntersections(new Ray(p200, v502.scale(-1))), "Ray starts outside the plane, not orthogonal, not paralal, doesn't cross the Plane");
+        assertNull(plane.findGeoIntersectionsHelper(new Ray(p200, v502.scale(-1))), "Ray starts outside the plane, not orthogonal, not paralal, doesn't cross the Plane");
 
         // =============== Boundary Values Tests ==================
 
         //**** Group: Ray parallel to the Plane
         // TC03: Ray inside the plane
         assertNull(plane.findIntersections(new Ray(new Point(0.5, 0.25, 0.25), new Vector(-0.5, 0.2, 0.3))),
-                "ERROR: findIntersections() did not return null when the ray is parallel to the plane and included in the plane");
+                "ERROR: findGeoIntersectionsHelper() did not return null when the ray is parallel to the plane and included in the plane");
         // TC04: Ray outside the plane
         assertNull(plane.findIntersections(new Ray(new Point(0.6, 0.25, 0.25), new Vector(-0.5, 0.2, 0.3))),
-                "ERROR: findIntersections() did not return null when the ray is parallel to the plane and not included in the plane");
+                "ERROR: findGeoIntersectionsHelper() did not return null when the ray is parallel to the plane and not included in the plane");
 
         //**** Group: Ray orthogonal to the Plane
         // TC05: Ray starts before the plane
         result1 = plane.findIntersections(new Ray(new Point(0.6, 0.25, 0.25), new Vector(-1, -1, -1)));
         assertEquals(1, result1.size(),
-                "ERROR: findIntersections() returned incorrect number of points when the ray is orthogonal to the plane and begins before the plane");
+                "ERROR: findGeoIntersectionsHelper() returned incorrect number of points when the ray is orthogonal to the plane and begins before the plane");
         // TC06: Ray starts inside the plane
         assertNull(plane.findIntersections(new Ray(new Point(0.5, 0.25, 0.25), new Vector(-1, -1, -1))),
-                "ERROR: findIntersections() did not return null when the ray is orthogonal to the plane and begins inside the plane");
+                "ERROR: findGeoIntersectionsHelper() did not return null when the ray is orthogonal to the plane and begins inside the plane");
         // TC07: Ray starts after the plane
         assertNull(plane.findIntersections(new Ray(new Point(0.4, 0.25, 0.25), new Vector(-1, -1, -1))),
-                "ERROR: findIntersections() did not return null when the ray is orthogonal to the plane and begins after the plane");
+                "ERROR: findGeoIntersectionsHelper() did not return null when the ray is orthogonal to the plane and begins after the plane");
 
         //**** Group: Ray not parallel and not orthogonal to the Plane
         // TC08: Ray starts inside the plane
         assertNull(plane.findIntersections(new Ray(new Point(0.5, 0.25, 0.25), new Vector(-3, 5, 2))),
-                "ERROR: findIntersections() did not return null when the ray begins in the plane");
+                "ERROR: findGeoIntersectionsHelper() did not return null when the ray begins in the plane");
         // TC09: Ray starts in the reference point of the plane
         assertNull(plane.findIntersections(new Ray(p001, new Vector(-3, 5, 2))),
-                "ERROR: findIntersections() did not return null when the ray begins in the same point which appears as reference point in the plane");
+                "ERROR: findGeoIntersectionsHelper() did not return null when the ray begins in the same point which appears as reference point in the plane");
 
     }
 

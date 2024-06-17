@@ -4,9 +4,8 @@ import java.util.List;
 
 import static primitives.Util.isZero;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
+import static geometries.Intersectable.GeoPoint;
 
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
@@ -14,7 +13,7 @@ import primitives.Vector;
  *
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -94,8 +93,9 @@ public class Polygon implements Geometry {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
-      //  return List.of();
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         return null;
     }
+
+
 }

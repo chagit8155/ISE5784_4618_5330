@@ -1,12 +1,10 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Vector;
 /**
  * Abstract class representing a radial geometry in a three-dimensional Cartesian coordinate system.
  * Radial geometry is characterized by its radius.
  */
-public abstract class RadialGeometry implements Geometry {
+public abstract class RadialGeometry extends Geometry {
 
     // Radius of the radial geometry
     protected double radius;

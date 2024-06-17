@@ -1,9 +1,5 @@
 package primitives;
 
-import static java.lang.System.out;
-
-import static primitives.Util.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +19,7 @@ class PointTest {
     Vector v1Opposite = new Vector(-1, -2, -3);
 
     /**
-     * Test method for {@link primitives.Point#subtract(Point)}.
+     * Test method for {@link Point#subtract(Point)}.
      */
     @Test
     void testSubtract() {
@@ -39,7 +35,7 @@ class PointTest {
 
 
     /**
-     * Test method for {@link primitives.Point#add(primitives.Vector)}.
+     * Test method for {@link Point#add(primitives.Vector)}.
      */
     @Test
     void testAdd() { // Add vector to point
@@ -52,7 +48,7 @@ class PointTest {
     }
 
     /**
-     * Test method for {@link primitives.Point#distanceSquared(Point)} .
+     * Test method for {@link Point#distanceSquared(Point)} .
      */
     @Test
     void testDistanceSquared() {
@@ -68,7 +64,7 @@ class PointTest {
     }
 
     /**
-     * Test method for {@link primitives.Point#distance(Point)} .
+     * Test method for {@link Point#distance(Point)} .
      */
     @Test
     void distance() {

@@ -1,19 +1,14 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
 import primitives.Util;
-import primitives.Vector;
-
+import primitives.*;
+import static geometries.Intersectable.GeoPoint;
 import java.util.List;
-
-import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
 
 /**
  * Represents a plane in a three-dimensional Cartesian coordinate system.
  */
-public class Plane implements Geometry {
+public class Plane extends Geometry {
     // Point on the plane
     private final Point point;
 
@@ -62,6 +57,7 @@ public class Plane implements Geometry {
         //return  null; //stage 1
     }
 
+
     @Override
     public List<Point> findIntersections(Ray ray) {
         Vector v = ray.getDirection();
@@ -80,8 +76,19 @@ public class Plane implements Geometry {
 
         // If t is positive, return the intersection point; otherwise, return null
         if (t > 0)
-            return List.of(ray.getPoint(t));
+            return List.of( ray.getPoint(t));
         return null;
+    }
+
+
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        List<Point> intersections = this.findIntersections(ray);
+        if (intersections == null) {
+            return null;
+        }
+        Point point = intersections.get(0);
+        return List.of(new GeoPoint(this, point));
     }
 
 }
