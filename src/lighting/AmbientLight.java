@@ -8,13 +8,10 @@ import primitives.*;
  * It holds the intensity of the ambient light which is calculated
  * using the original light intensity and an attenuation factor.
  */
-public class AmbientLight {
+public class AmbientLight extends Light {
 
 
-    /**
-     * The intensity of the ambient light
-     */
-    private final Color intensity;
+
     /**
      * A constant for no ambient light
      */
@@ -28,7 +25,8 @@ public class AmbientLight {
      * @param ka the attenuation factor
      */
     public AmbientLight(Color Ia, Double3 ka) {
-        this.intensity = Ia.scale(ka);
+
+       super(Ia.scale(ka));
     }
 
     /**
@@ -38,16 +36,9 @@ public class AmbientLight {
      * @param ka the attenuation factor
      */
     public AmbientLight(Color Ia, double ka) {
-        this.intensity = Ia.scale(ka);
+       super(Ia.scale(ka));
     }
 
-    /**
-     * Get the intensity of the ambient light
-     *
-     * @return the intensity as a Color
-     */
-    public Color getIntensity() {
-        return intensity;
-    }
+
 
 }
