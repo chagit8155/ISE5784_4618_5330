@@ -26,6 +26,19 @@ public class SpotLight extends PointLight {
         this.direction = direction.normalize();
     }
 
+    /**
+     * Sets the direction vector of the spotlight and returns the SpotLight object itself,
+     * enabling fluent configuration. This method allows for setting the direction of the
+     * spotlight's beam, which is essential for its focused lighting effect.
+     *
+     * @param direction the direction vector of the spotlight
+     * @return the SpotLight object, enabling method chaining
+     */
+    public SpotLight setDirection(Vector direction) {
+        this.direction = direction.normalize();
+        return this;
+    }
+
 
     @Override
     public Color getIntensity(Point p) {
@@ -38,5 +51,7 @@ public class SpotLight extends PointLight {
 
         double factor = projection / direction.length();
         return super.getIntensity(p).scale(factor);
+//        return super.getIntensity(p).
+//                scale(Math.pow(Math.max(0, direction.dotProduct(super.getL(p))), 1));
     }
 }

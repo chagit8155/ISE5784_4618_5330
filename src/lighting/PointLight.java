@@ -7,7 +7,7 @@ import primitives.*;
  */
 public class PointLight extends Light implements LightSource {
 
-    private  Point position;
+    private Point position;
     private double kC = 1.0;
     private double kL = 0.0;
     private double kQ = 0.0;
@@ -21,6 +21,23 @@ public class PointLight extends Light implements LightSource {
     public PointLight(Color intensity, Point position) {
         super(intensity);
         this.position = position;
+    }
+
+    /**
+     * Creates a point light.
+     *
+     * @param intensity light's intensity
+     * @param position  light source's location
+     * @param kC        constant attenuation factor
+     * @param kL        linear attenuation factor
+     * @param kQ        quadratic attenuation factor
+     */
+    public PointLight(Color intensity, Point position, double kC, double kL, double kQ) {
+        super(intensity);
+        this.position = position;
+        this.kC = kC;
+        this.kL = kL;
+        this.kQ = kQ;
     }
 
     /**
@@ -57,25 +74,11 @@ public class PointLight extends Light implements LightSource {
     }
 
 
-    /**
-     * Constructor for Light.
-     *
-     * @param intensity The intensity of the light source.
-     */
-    protected PointLight(Color intensity) {
-        super(intensity);
-    }
-
-
-
-
-
     @Override
     public Color getIntensity(Point p) {
         double distance = position.distance(p);
         double v = kC + kL * distance + kQ * distance * distance;
-        int attenuation = ((int) v);
-        return intensity.reduce(attenuation);
+        return intensity.scale(1 / v);
     }
 
     @Override

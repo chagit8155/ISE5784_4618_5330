@@ -38,7 +38,7 @@ public class Scene {
     /**
      * List of light sources in the scene.
      */
-    private List<LightSource> lights = new LinkedList<>();
+    public List<LightSource> lights = new LinkedList<>();
 
 
 
@@ -85,6 +85,16 @@ public class Scene {
      */
     public Scene setGeometries(Geometries geometries) {
         this.geometries = geometries;
+        return this;
+    }
+    /**
+     * Adds a light source to the scene.
+     *
+     * @param light The light source to add.
+     * @return The current scene instance for method chaining.
+     */
+    public Scene addLight(LightSource light) {
+        lights.add(light);
         return this;
     }
 
