@@ -4,12 +4,10 @@ import primitives.*;
 import java.util.List;
 
 /**
- * Represents an interface for geometries that can be intersected by a ray.
+ * Represents an abstract class for geometries that can be intersected by a ray.
  * Provides a method to find intersection points between the geometry and a given ray.
  */
 public abstract class Intersectable {
-
-
 
     /**
      * Inner static class to represent a geometric point.
@@ -49,7 +47,7 @@ public abstract class Intersectable {
      * @param ray The ray to intersect with the geometry.
      * @return A list of points where the ray intersects the geometry.
      */
-    public List<Point> findIntersections(Ray ray){
+    public List<Point> findIntersections(Ray ray) {
         List<GeoPoint> geoList = findGeoIntersections(ray);
         return geoList == null ? null
                 : geoList.stream().map(geoPoint -> geoPoint.point).toList();
@@ -66,7 +64,6 @@ public abstract class Intersectable {
 
         return findGeoIntersectionsHelper(ray);
     }
-
 
 
     /**

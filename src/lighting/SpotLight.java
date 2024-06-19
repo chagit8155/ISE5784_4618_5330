@@ -10,7 +10,7 @@ public class SpotLight extends PointLight {
 
 
     private Vector direction;
-
+    private int narrowness = 1;
 
 
 
@@ -40,6 +40,12 @@ public class SpotLight extends PointLight {
     }
 
 
+    public SpotLight setNarrowBeam(int narrowness) {
+        this.narrowness = narrowness;
+        return this;
+    }
+
+
     @Override
     public Color getIntensity(Point p) {
         Vector l = getL(p);
@@ -49,9 +55,9 @@ public class SpotLight extends PointLight {
             return Color.BLACK;
         }
 
-        double factor = projection / direction.length();
-        return super.getIntensity(p).scale(factor);
-//        return super.getIntensity(p).
-//                scale(Math.pow(Math.max(0, direction.dotProduct(super.getL(p))), 1));
+//        double factor = projection / direction.length();
+//        return super.getIntensity(p).scale(factor);
+        return super.getIntensity(p).
+                scale(Math.pow(Math.max(0, direction.dotProduct(super.getL(p))), narrowness));
     }
 }
