@@ -87,7 +87,7 @@ public class SimpleRayTracer extends RayTracerBase {
             double nl = alignZero(n.dotProduct(l));
 
 
-            if (nl * nv > 0 && unshaded(intersection, l, n))  // sign(nl) == sing(nv) // check if the light and the camera at the same side
+            if (nl * nv > 0 && unshaded(intersection, l, n ,lightSource))  // sign(nl) == sing(nv) // check if the light and the camera at the same side
             {
                 Color lightIntensity = lightSource.getIntensity(intersection.point);
                 color = color.add(
@@ -140,22 +140,26 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param n  the normal at the point
      * @return true if the point is not shaded, false otherwise
      */
-    private boolean unshaded(GeoPoint gp, Vector l, Vector n){
-        Vector lightDirection=l.scale(-1);
-        double nl = alignZero(n.dotProduct(l));
-        Vector deltaVector=n.scale(Util.alignZero(nl)<0?DELTA:-DELTA);
-        Point point=gp.point.add(deltaVector);
-        Ray lightRay=new Ray(point,lightDirection);
-        List<GeoPoint> intersections=scene.geometries.findGeoIntersections(lightRay);
-        if(intersections==null)
-            return true;
+    private boolean unshaded(GeoPoint gp, Vector l, Vector n, LightSource lightSource) {
+        Vector lightDirection = l.scale(-1);
+        Vector deltaVector = n.scale(n.dotProduct(lightDirection) > 0 ? DELTA : -DELTA);
+        Point point = gp.point.add(deltaVector);
 
-        for(GeoPoint geoPoint:intersections){
-            if(geoPoint.point.distance(point)<geoPoint.point.distance(gp.point))
+        Ray lightRay = new Ray(point, lightDirection);
+
+        var intersections = scene.geometries.findGeoIntersections(lightRay);
+        if (intersections == null) {
+            return true;
+        }
+
+        double lightDistance = lightSource.getDistance(point);
+
+        for (GeoPoint geoPoint : intersections) {
+            if (geoPoint.point.distance(gp.point) < lightDistance) {
                 return false;
+            }
         }
         return true;
-
     }
 
 //    private boolean unshaded(GeoPoint gp, Vector l, Vector n) {
