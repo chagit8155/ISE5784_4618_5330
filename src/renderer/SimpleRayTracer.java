@@ -11,6 +11,7 @@ import java.util.List;
 
 public class SimpleRayTracer extends RayTracerBase {
 
+    private static final double DELTA = 0.1;
 
     /**
      * Constructs a SimpleRayTracer with the given scene.
@@ -53,6 +54,9 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the calculated color at the intersection point
      */
     private Color calcColor(GeoPoint gp, Ray ray) {
+//        if (!unshaded(gp,ray.getDirection(), gp.geometry.getNormal(gp.point))) {
+//            return Color.BLACK; // במידה ויש הצללה - שחור
+//        }
         return scene.ambientLight.getIntensity()
                 .add(gp.geometry.getEmission()) /////////
                 .add(calcLocalEffects(gp, ray));
@@ -66,25 +70,26 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color resulting from the local effects
      */
     private Color calcLocalEffects(GeoPoint intersection, Ray ray) {
-        Vector v = ray.getDirection().normalize();
-        Vector n = intersection.geometry.getNormal(intersection.point);
+        Vector v = ray.getDirection().normalize(); //camera dir
+        Vector n = intersection.geometry.getNormal(intersection.point);//normal's geometry
         double nv = alignZero(n.dotProduct(v));
-        if (nv == 0) return Color.BLACK;
+        if (nv == 0) // there is no light effect
+            return Color.BLACK;
 
+        //the material
         int nShininess = intersection.geometry.getMaterial().shininess;
         Double3 kd = intersection.geometry.getMaterial().kd;
         Double3 ks = intersection.geometry.getMaterial().ks;
 
         Color color = Color.BLACK;
-        for (LightSource lightSource : scene.lights) {
+        for (LightSource lightSource : scene.lights) { //for every source calculate the vector from the lighted point to the light source.
             Vector l = lightSource.getL(intersection.point).normalize();
             double nl = alignZero(n.dotProduct(l));
 
 
-            if (nl * nv > 0) { // sign(nl) == sing(nv)
+            if (nl * nv > 0 && unshaded(intersection, l, n))  // sign(nl) == sing(nv) // check if the light and the camera at the same side
+            {
                 Color lightIntensity = lightSource.getIntensity(intersection.point);
-
-
                 color = color.add(
                         calcDiffusive(kd, l, n, lightIntensity),
                         calcSpecular(ks, l, n, v, nShininess, lightIntensity));
@@ -126,4 +131,54 @@ public class SimpleRayTracer extends RayTracerBase {
 //        double vr = v.dotProduct(r);
 //        return (vr < 0) ? Color.BLACK : lightIntensity.scale(ks).scale(Math.pow(vr, nShininess));
     }
+
+    /**
+     * Checks if there is no shading between a point and a light source.
+     *
+     * @param gp the geometry point
+     * @param l  the vector from the point to the light source
+     * @param n  the normal at the point
+     * @return true if the point is not shaded, false otherwise
+     */
+    private boolean unshaded(GeoPoint gp, Vector l, Vector n){
+        Vector lightDirection=l.scale(-1);
+        double nl = alignZero(n.dotProduct(l));
+        Vector deltaVector=n.scale(Util.alignZero(nl)<0?DELTA:-DELTA);
+        Point point=gp.point.add(deltaVector);
+        Ray lightRay=new Ray(point,lightDirection);
+        List<GeoPoint> intersections=scene.geometries.findGeoIntersections(lightRay);
+        if(intersections==null)
+            return true;
+
+        for(GeoPoint geoPoint:intersections){
+            if(geoPoint.point.distance(point)<geoPoint.point.distance(gp.point))
+                return false;
+        }
+        return true;
+
+    }
+
+//    private boolean unshaded(GeoPoint gp, Vector l, Vector n) {
+//        Vector lightDirection = l.scale(-1); // כיוון האור מנקודת המוצא
+//        Vector deltaVector = n.scale(n.dotProduct(lightDirection) > 0 ? DELTA : -DELTA);
+//        Point point = gp.point.add(deltaVector);
+//
+//        Ray lightRay = new Ray(point, lightDirection);
+//
+//        var intersections = scene.geometries.findGeoIntersections(lightRay);
+//        if (intersections == null) {
+//            return true;
+//        }
+//
+//        double lightDistance = gp.point.distance(point);
+//
+//        for (GeoPoint geoPoint : intersections) {
+//            if (geoPoint.point.distance(gp.point) < lightDistance) {
+//                return false; // יש הצללה
+//            }
+//        }
+//        return true;
+//    }
+
+
 }

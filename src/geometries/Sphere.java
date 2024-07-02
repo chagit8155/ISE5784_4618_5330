@@ -39,13 +39,13 @@ public class Sphere extends RadialGeometry {
 
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        List<Point> intersections = this.findIntersections(ray);
+        List<Point> intersections = this.findIntersectionsHelp(ray);
         return intersections == null ? null
                 : intersections.stream().map(point -> new GeoPoint(this,point)).toList();
     }
 
-    @Override
-    public List<Point> findIntersections(Ray ray) {
+
+    private List<Point> findIntersectionsHelp(Ray ray) {
 
         //(-1,0,0) (3,1,0)
         Point p0 = ray.getHead();
