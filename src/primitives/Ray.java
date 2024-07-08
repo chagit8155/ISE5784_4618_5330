@@ -16,6 +16,7 @@ public class Ray {
      * The direction vector of the ray.
      */
     final private Vector direction;
+    private static final double DELTA = 0.1;
 
     /**
      * Constructs a ray with the specified head (starting point) and direction.
@@ -29,6 +30,24 @@ public class Ray {
         // Normalize the direction vector before storing it
         this.direction = direction.normalize();
     }
+
+    public Ray(Point p, Vector v, Vector normalToP) {
+        direction = v.normalize();
+        double result = v.dotProduct(normalToP);
+        if (Util.isZero(result))
+            this.head = p;
+        else
+            this.head = p.add(normalToP.scale(Util.alignZero(result) < 0 ? -DELTA : DELTA));
+
+//        head = Util.isZero(result) ? p : p.add(normalToP.scale(Util.alignZero(result)<0? -DELTA:DELTA));
+    }
+
+//    public Ray(Point point, Vector dir, Vector normal) {
+//        double sign = dir.dotProduct(normal) > 0 ? DELTA : -DELTA;
+//        this.head = point.add(normal.scale(sign));
+//        this.direction = dir.normalize();
+//    }
+
 
     /**
      * Returns the starting point of the ray.
