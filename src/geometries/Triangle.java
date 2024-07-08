@@ -31,11 +31,19 @@ public class Triangle extends Polygon {
 
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         // Find intersections with the plane containing the triangle
-        List<GeoPoint> intersections = this.plane.findGeoIntersectionsHelper(ray);
+        List<GeoPoint> intersections = this.plane.findGeoIntersectionsHelper(ray, maxDistance);
         if (intersections == null) {
             // If there is no intersection with the plane, there is no intersection with the triangle
+            return null;
+        }
+
+        // Intersection point with the plane
+        GeoPoint intersection = intersections.get(0);
+
+        // Check if the intersection point is within the max distance
+        if (ray.getHead().distance(intersection.point) > maxDistance) {
             return null;
         }
 
@@ -61,7 +69,7 @@ public class Triangle extends Polygon {
 
         // If all dot products have the same sign, the intersection point is inside the triangle
         if ((vn1 > 0 && vn2 > 0 && vn3 > 0) || (vn1 < 0 && vn2 < 0 && vn3 < 0)) {
-            return  List.of(new GeoPoint(this, intersections.get(0).point));
+            return List.of(new GeoPoint(this, intersection.point));
         }
 
         // If the intersection point is outside the triangle

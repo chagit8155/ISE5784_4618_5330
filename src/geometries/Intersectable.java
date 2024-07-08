@@ -1,6 +1,7 @@
 package geometries;
 
 import primitives.*;
+
 import java.util.List;
 
 /**
@@ -40,10 +41,23 @@ public abstract class Intersectable {
             return "Point [geometry=" + geometry + ", point=" + point + "]";
         }
     }
+/////////////////////////////////////////private - maybe should move to simple ray..
 
+    /**
+     * Finds the closest intersection point of a ray with the scene geometry.
+     *
+     * @param ray the ray to be traced
+     * @return the closest intersection point or null if no intersection
+     */
+    public GeoPoint findClosestIntersection(Ray ray) {
+        var intersections = findGeoIntersections(ray);
+        return intersections == null ? null : ray.findClosestGeoPoint(intersections);
+    }
+//////////////////////////////////////////
 
     /**
      * Finds the intersection points between the geometry and a given ray.
+     *
      * @param ray The ray to intersect with the geometry.
      * @return A list of points where the ray intersects the geometry.
      */
@@ -54,26 +68,15 @@ public abstract class Intersectable {
     }
 
 
-    /**
-     * Finds intersections with the ray and returns a list of GeoPoints.
-     *
-     * @param ray the ray to check intersections with
-     * @return list of GeoPoints or null if no intersections found
-     */
-    public final List<GeoPoint> findGeoIntersections(Ray ray){
-
-        return findGeoIntersectionsHelper(ray);
+    public final List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
     }
 
+    public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
+        return findGeoIntersectionsHelper(ray, maxDistance);
+    }
 
-    /**
-     * Finds intersections between the ray and the object.
-     *
-     * @param ray the ray to check intersections with
-     * @return list of GeoPoints of intersections
-     */
-    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
-
+    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
 
 
 }

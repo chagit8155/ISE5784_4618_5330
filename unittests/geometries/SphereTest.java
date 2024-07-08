@@ -60,7 +60,7 @@ class SphereTest {
         // ============ Equivalence Partitions Tests ==============
 
         // TC01: Ray's line is outside the sphere (0 points)
-        assertNull(sphere.findGeoIntersectionsHelper(new Ray(p01, v110)), "Ray's line out of sphere");
+        assertNull(sphere.findIntersections(new Ray(p01, v110)), "Ray's line out of sphere");
 
         // TC02: Ray starts before and crosses the sphere (2 points)
         var exp = List.of(gp1, gp2);

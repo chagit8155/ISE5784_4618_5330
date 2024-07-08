@@ -1,6 +1,7 @@
 package geometries;
 
 import primitives.*;
+
 import static geometries.Intersectable.GeoPoint;
 
 import java.util.LinkedList;
@@ -38,15 +39,15 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        List<Point> intersections = this.findIntersectionsHelp(ray);
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
+        List<Point> intersections = this.findIntersectionsHelp(ray, maxDistance);
         return intersections == null ? null
-                : intersections.stream().map(point -> new GeoPoint(this,point)).toList();
+                : intersections.stream().map(point -> new GeoPoint(this, point)).toList();
     }
 
 
-    private List<Point> findIntersectionsHelp(Ray ray) {
 
+    private List<Point> findIntersectionsHelp(Ray ray, double maxDistance) {
         //(-1,0,0) (3,1,0)
         Point p0 = ray.getHead();
         Vector vDir = ray.getDirection();
@@ -64,23 +65,30 @@ public class Sphere extends RadialGeometry {
 
         // Dealing with a case in which the ray is perpendicular to the sphere at the
         // intersection point.
-        if (dPerpendicular == this.radius) // 0 points
+        if (dPerpendicular >= this.radius) // 0 points
             return null;
 
         // Returning intersection points, ensuring that only those intersected by the
         // ray are returned.
         double thInside = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(dPerpendicular, 2));
 
-        if (alignZero(tmBase - thInside) > 0 && alignZero(tmBase + thInside) > 0) // 2 points
-            return List.of(ray.getPoint(tmBase - thInside), ray.getPoint(tmBase + thInside));
+        double t1 = tmBase - thInside;
+        double t2 = tmBase + thInside;
 
-        else if (tmBase - thInside > 0)  // 1 point
-            return List.of(ray.getPoint(tmBase - thInside));
+        boolean t1Valid = alignZero(t1) > 0 && alignZero(t1 - maxDistance) < 0;
+        boolean t2Valid = alignZero(t2) > 0 && alignZero(t2 - maxDistance) < 0;
 
-        else if (tmBase + thInside > 0)  // 1 point
-            return List.of(ray.getPoint(tmBase + thInside));
+        if (t1Valid && t2Valid) // 2 points
+            return List.of(ray.getPoint(t1), ray.getPoint(t2));
+
+        else if (t1Valid)  // 1 point
+            return List.of(ray.getPoint(t1));
+
+        else if (t2Valid)  // 1 point
+            return List.of(ray.getPoint(t2));
 
         return null; // else 0 points
     }
-
 }
+
+

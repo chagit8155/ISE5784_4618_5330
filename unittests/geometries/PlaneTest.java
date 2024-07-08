@@ -50,7 +50,7 @@ class PlaneTest {
     }
 
     /**
-     * Test method for {@link  Intersectable#findGeoIntersectionsHelper(Ray)}.
+     * Test method for {@link  Intersectable#findGeoIntersections(Ray)}.
      */
     @Test
     void findIntersections() {
@@ -70,7 +70,7 @@ class PlaneTest {
         assertEquals(exp, result1, "Ray starts outside the plane, not orthogonal, not paralal, cross the Plane");
 
         // TC02: Ray starts outside the plane, not orthogonal, not paralal, doesn't cross the Plane
-        assertNull(plane.findGeoIntersectionsHelper(new Ray(p200, v502.scale(-1))), "Ray starts outside the plane, not orthogonal, not paralal, doesn't cross the Plane");
+        assertNull(plane.findGeoIntersections(new Ray(p200, v502.scale(-1))), "Ray starts outside the plane, not orthogonal, not paralal, doesn't cross the Plane");
 
         // =============== Boundary Values Tests ==================
 
