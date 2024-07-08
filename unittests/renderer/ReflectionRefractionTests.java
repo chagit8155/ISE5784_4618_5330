@@ -106,10 +106,11 @@ public class ReflectionRefractionTests {
     }
 
 
+
     /** Produce a picture of multiple objects lighted by multiple light sources */
 
     @Test
-    public void combinedTest() {
+    public void MultiObjectTest() {
         scene.geometries.add(
                 // Transparent Sphere
                 new Sphere(20d, new Point(-50, -50, -100)).setEmission(new Color(BLUE))
@@ -157,7 +158,7 @@ public class ReflectionRefractionTests {
                 .setDirection(new Vector(0, 0, -1), Vector.Y)
                 .setVpDistance(500)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("combinedTest", 600, 600))
+                .setImageWriter(new ImageWriter("MultiObjectTest", 600, 600))
                 .setRayTracer(new SimpleRayTracer(scene));
 
         cameraBuilder.renderImage()
@@ -166,6 +167,47 @@ public class ReflectionRefractionTests {
     }
 
 
+
+
+
+    @Test
+    public void bonusTest() {
+        scene.geometries.add(
+                // Sphere with transparency and reflection
+                new Sphere(50d, new Point(0, 0, -100)).setEmission(new Color(RED))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.3).setShininess(100).setKt(0.5).setKr(0.5)),
+                // Smaller sphere
+                new Sphere(25d, new Point(70, 70, -100)).setEmission(new Color(GREEN))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(100)),
+                // Triangle with reflection
+                new Triangle(new Point(-100, -100, -200), new Point(100, -100, -200), new Point(0, 100, -200))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(60).setKr(0.7)),
+                // Cube with reflection and transparency
+                new Polygon(new Point(-50, -50, -300), new Point(-50, 50, -300), new Point(50, 50, -300), new Point(50, -50, -300))
+                        .setEmission(new Color(BLUE))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(60).setKt(0.5).setKr(0.5))
+        );
+
+        // Add lights
+        scene.lights.add(new SpotLight(new Color(700, 400, 0), new Point(-200, -200, 200), new Vector(1, 1, -2))
+                .setKL(0.0004).setKQ(0.0000006));
+        scene.lights.add(new SpotLight(new Color(510, 200, 200), new Point(200, 200, 200), new Vector(-1, -1, -2))
+                .setKL(0.00001).setKQ(0.000005));
+        scene.lights.add(new PointLight(new Color(500, 300, 300), new Point(0, 0, 100))
+                .setKL(4E-5).setKQ(2E-7));
+
+        Camera.Builder cameraBuilder = Camera.getBuilder()
+                .setLocation(new Point(0, 0, 1000))
+                .setDirection(new Vector(0, 0, -1), Vector.Y)
+                .setVpDistance(1000)
+                .setVpSize(500, 500)
+                .setImageWriter(new ImageWriter("bonusTest", 600, 600))
+                .setRayTracer(new SimpleRayTracer(scene));
+
+        cameraBuilder.renderImage()
+                .writeToImage()
+                .build();
+    }
 
 
 
