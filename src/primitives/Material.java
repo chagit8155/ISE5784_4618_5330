@@ -16,15 +16,18 @@ public class Material {
      */
     public Double3 ks = Double3.ZERO;
 
-    /**
-     * The reflection coefficient of the material.
-     */
-    public Double3 kr = Double3.ZERO;
+
+    // New fields for transparency and reflection
 
     /**
-     * The transparency coefficient of the material.
+     * The transparency attenuation coefficient
      */
     public Double3 kt = Double3.ZERO;
+
+    /**
+     * The reflection attenuation coefficient
+     */
+    public Double3 kr = Double3.ZERO;
 
     /**
      * The shininess of the material, which affects the specular highlight.
@@ -76,32 +79,20 @@ public class Material {
     }
 
     /**
-     * Sets the reflection coefficient (kr) of the material.
+     * Sets the transparency attenuation coefficient with the same value for all components.
      *
-     * @param kr the reflection coefficient to set
-     * @return the current Material object for chaining
+     * @param kt the transparency attenuation coefficient
+     * @return the current Material object
      */
-    public Material setKr(Double3 kr) {
-        this.kr = kr;
+    public Material setKt(double kt) {
+        this.kt = new Double3(kt);
         return this;
     }
-
     /**
-     * Sets the reflection coefficient (kr) of the material.
+     * Sets the transparency attenuation coefficient with the same value for all components.
      *
-     * @param kr the reflection coefficient to set
-     * @return the current Material object for chaining
-     */
-    public Material setKr(double kr) {
-        this.kr = new Double3(kr);
-        return this;
-    }
-
-    /**
-     * Sets the transparency coefficient (kt) of the material.
-     *
-     * @param kt the transparency coefficient to set
-     * @return the current Material object for chaining
+     * @param kt the transparency attenuation coefficient
+     * @return the current Material object
      */
     public Material setKt(Double3 kt) {
         this.kt = kt;
@@ -109,13 +100,24 @@ public class Material {
     }
 
     /**
-     * Sets the transparency coefficient (kt) of the material.
+     * Sets the reflection attenuation coefficient.
      *
-     * @param kt the transparency coefficient to set
-     * @return the current Material object for chaining
+     * @param kR the reflection attenuation coefficient
+     * @return the current Material object
      */
-    public Material setKt(double kt) {
-        this.kt = new Double3(kt);
+    public Material setKr(Double3 kR) {
+        this.kr = kR;
+        return this;
+    }
+
+    /**
+     * Sets the reflection attenuation coefficient with the same value for all components.
+     *
+     * @param kr the reflection attenuation coefficient
+     * @return the current Material object
+     */
+    public Material setKr(double kr) {
+        this.kr = new Double3(kr);
         return this;
     }
 
