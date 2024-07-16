@@ -75,7 +75,30 @@ public class Point {
     public double distance(Point other) {
         return Math.sqrt(distanceSquared(other));
     }
-
+    /**
+     * Get the value of x.
+     *
+     * @return the value of x
+     */
+    public double getX() {
+        return xyz.d1;
+    }
+    /**
+     * Retrieves the value of Y.
+     *
+     * @return the value of Y
+     */
+    public double getY() {
+        return xyz.d2;
+    }
+    /**
+     * Retrieves the value of Z.
+     *
+     * @return  the value of Z
+     */
+    public double getZ() {
+        return xyz.d3;
+    }
 
 //    @Override
 //    public boolean equals(Object obj) {

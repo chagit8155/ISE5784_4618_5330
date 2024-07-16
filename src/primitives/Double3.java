@@ -45,6 +45,7 @@ public class Double3 {
         this.d3 = value;
     }
 
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

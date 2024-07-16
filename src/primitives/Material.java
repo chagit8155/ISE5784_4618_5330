@@ -34,6 +34,10 @@ public class Material {
      */
     public int shininess = 1;
 
+
+    public double glossiness = 0;
+    public double diffuseness = 0;
+
     /**
      * Sets the diffuse coefficient (kd) of the material.
      *
@@ -131,4 +135,15 @@ public class Material {
         this.shininess = shininess;
         return this;
     }
+
+    public Material setGlossiness(double glossiness) {
+        this.glossiness = glossiness;
+        return this;
+    }
+
+    public Material setDiffuseness(double diffuseness) {
+        this.diffuseness = diffuseness;
+        return this;
+    }
+
 }

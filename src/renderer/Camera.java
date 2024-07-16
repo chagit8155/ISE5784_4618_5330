@@ -73,8 +73,10 @@ public class Camera implements Cloneable {
         double yI = -(i - (nY - 1) / 2.0) * rY;
         double xJ = (j - (nX - 1) / 2.0) * rX;
         Point pIJ = pc;
-        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
-        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
+        if (!Util.isZero(xJ))
+            pIJ = pIJ.add(vRight.scale(xJ));
+        if (!Util.isZero(yI))
+            pIJ = pIJ.add(vUp.scale(yI));
 
         Vector vIJ = pIJ.subtract(location);
         return new Ray(location, vIJ);
@@ -143,9 +145,10 @@ public class Camera implements Cloneable {
          * @param j  the y index of the pixel
          */
         private void castRay(int nX, int nY, int i, int j) {
-            Ray ray = camera.constructRay(nX, nY, i, j);
-            Color color = camera.rayTracer.traceRay(ray);
-            camera.imageWriter.writePixel(i, j, color);
+//            Ray ray = camera.constructRay(nX, nY, i, j);
+//            Color color = camera.rayTracer.traceRay(ray);
+//            camera.imageWriter.writePixel(i, j, color);
+            camera.imageWriter.writePixel(j, i, camera.rayTracer.traceRay(camera.constructRay(nX, nY, j, i)));
         }
 
 
@@ -166,7 +169,7 @@ public class Camera implements Cloneable {
                 }
             }
             return this;
-        }
+            }
 
         /**
          * Prints a grid on the image with the specified interval and color.
@@ -188,7 +191,7 @@ public class Camera implements Cloneable {
         /**
          * Writes the image to a file.
          */
-        public Builder  writeToImage() {
+        public Builder writeToImage() {
             camera.imageWriter.writeToImage();
             return this;
         }

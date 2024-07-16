@@ -25,10 +25,10 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     public SimpleRayTracer(Scene scene) {
         super(scene);
-    }
+    }//v
 
     @Override
-    public Color traceRay(Ray ray) {
+    public Color traceRay(Ray ray) {//v
         GeoPoint closestPoint = scene.geometries.findClosestIntersection(ray);
         return closestPoint == null ? scene.background : calcColor(closestPoint, ray);
     }
@@ -40,8 +40,9 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param ray the ray that intersected the geometry
      * @return the color at the intersection point
      */
-    private Color calcColor(GeoPoint gp, Ray ray) {
-        return calcColor(gp, ray, MAX_CALC_COLOR_LEVEL, new Double3(1.0)).add(scene.ambientLight.getIntensity());
+    private Color calcColor(GeoPoint gp, Ray ray) { //v
+        return calcColor(gp, ray, MAX_CALC_COLOR_LEVEL, new Double3(1.0))
+                .add(scene.ambientLight.getIntensity());
     }
 
     /**
@@ -58,8 +59,21 @@ public class SimpleRayTracer extends RayTracerBase {
             return Color.BLACK;
         }
 
-        Color color = calcLocalEffects(gp, ray, k);
-        return 1 == level ? color : color.add(calcGlobalEffects(gp, ray, level, k));
+
+        Color color = gp.geometry.getEmission();//
+        Vector v = ray.getDirection();//
+        Vector n = gp.geometry.getNormal(gp.point);//
+        Material material = gp.geometry.getMaterial();//
+
+        // check that ray is not parallel to geometry
+        double nv = alignZero(n.dotProduct(v));//
+        if (Util.isZero(nv)) {//
+            return color;//
+        }
+
+        color = color.add(calcLocalEffects(gp, ray, k));//?
+        return 1 == level ? color :
+                color.add(calcGlobalEffectGD(gp,material, n, v, level, k));//
     }
 
     /**
@@ -70,13 +84,13 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param k   the accumulated reflection/refraction coefficient
      * @return the color at the intersection point due to local effects
      */
-    private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {
+    private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {//נראה בסדר
         Vector v = ray.getDirection();
         Vector n = gp.geometry.getNormal(gp.point);
         double nv = alignZero(n.dotProduct(v));
-        if (Util.isZero(nv)) {
-            return Color.BLACK;
-        }
+//        if (Util.isZero(nv)) { אין צורך לפיהם
+//            return Color.BLACK;
+//        }
 
         Material material = gp.geometry.getMaterial();
         Color color = gp.geometry.getEmission();
@@ -87,7 +101,7 @@ public class SimpleRayTracer extends RayTracerBase {
             double sign = ln > 0 ? 1 : -1;
 
             if (sign * nv > 0) {
-                Double3 ktr = transparency(gp, lightSource, l, n, nv, ln);
+                Double3 ktr = transparency(gp, lightSource, l, n);
                 if (ktr.product(k).lowerThan(MIN_CALC_COLOR_K)) {
                     continue;
                 }
@@ -109,11 +123,9 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param lightSource   the light source
      * @param l             the direction from the point to the light source
      * @param n             the normal at the intersection point
-     * @param nv            the dot product of the normal and the view direction
-     * @param ln            the dot product of the light direction and the normal
      * @return the transparency coefficient
      */
-    private Double3 transparency(GeoPoint gp, LightSource lightSource, Vector l, Vector n, double nv, double ln) {
+    private Double3 transparency(GeoPoint gp, LightSource lightSource, Vector l, Vector n) {//v
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(gp.point, lightDirection, n);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
@@ -160,33 +172,14 @@ public class SimpleRayTracer extends RayTracerBase {
             return Color.BLACK;
         }
         GeoPoint gp = scene.geometries.findClosestIntersection(ray);
-        return (gp == null ? scene.background : calcColor(gp, ray, level - 1, kkx)).scale(kx);
+//        return (gp == null ? scene.background :
+//                calcColor(gp, ray, level - 1, kkx)).scale(kx);
+        if (gp == null)
+            return scene.background.scale(kx);
+        return Util.isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDirection())) ? Color.BLACK
+                : calcColor(gp, ray, level - 1, kkx).scale(kx);
     }
 
-    /**
-     * Constructs a reflection ray from a given intersection point.
-     *
-     * @param gp  the intersection point
-     * @param ray the incident ray
-     * @return the reflection ray
-     */
-    private Ray constructReflectedRay(GeoPoint gp, Ray ray) {
-        Vector v = ray.getDirection();
-        Vector n = gp.geometry.getNormal(gp.point);
-        Vector r = v.subtract(n.scale(2 * v.dotProduct(n)));
-        return new Ray(gp.point, r, n);
-    }
-
-    /**
-     * Constructs a refraction ray from a given intersection point.
-     *
-     * @param gp  the intersection point
-     * @param ray the incident ray
-     * @return the refraction ray
-     */
-    private Ray constructRefractedRay(GeoPoint gp, Ray ray) {
-        return new Ray(gp.point, ray.getDirection(), gp.geometry.getNormal(gp.point));
-    }
 
     /**
      * Calculates the diffusive component of the color.
@@ -222,11 +215,98 @@ public class SimpleRayTracer extends RayTracerBase {
         }
         return lightIntensity.scale(ks).scale(Math.pow(-vr, shininess));
     }
+
+    /**
+     * Constructs a reflection ray from a given intersection point.
+     *
+     * @param gp  the intersection point
+     * @param ray the incident ray
+     * @return the reflection ray
+     */
+    private Ray constructReflectedRay(GeoPoint gp, Ray ray) {
+        Vector v = ray.getDirection();
+        Vector n = gp.geometry.getNormal(gp.point);
+        Vector r = v.subtract(n.scale(2 * v.dotProduct(n)));
+        return new Ray(gp.point, n, r);////////////////////////////
+    }
+
+    /**
+     * Constructs a refraction ray from a given intersection point.
+     *
+     * @param gp  the intersection point
+     * @param ray the incident ray
+     * @return the refraction ray
+     */
+    private Ray constructRefractedRay(GeoPoint gp, Ray ray) {
+        return new Ray(gp.point, ray.getDirection(), gp.geometry.getNormal(gp.point));
+    }
+    /**
+     * Constructs reflected rays based on the given parameters.
+     *
+     * @param  gp  the geometric point
+     * @param  v         the vector
+     * @param  n         the normal vector
+     * @param  kG        the constant factor
+     * @return           a list of reflected rays
+     */
+    private List<Ray> constructReflectedRays(GeoPoint gp, Vector v, Vector n, double kG) {
+        Vector r1 = v.subtract(n.scale(2 * v.dotProduct(n)));
+
+        Ray reflectedRay = new Ray(gp.point, r1, n); //constructReflectedRay(geoPoint, v, n);
+        double res = reflectedRay.getDirection().dotProduct(n);
+        if (kG == 0) {
+            return List.of(reflectedRay);
+        }
+        else{
+            return new TargetView(reflectedRay, kG).constructRayBeamGrid().stream()
+                    .filter(r -> r.getDirection().dotProduct(n) * res > 0).toList();
+
+        }
+    }
+    /**
+     * Construct refracted rays based on the given parameters.
+     *
+     * @param  gp  the geometric point
+     * @param  v         the vector v
+     * @param  n         the normal vector
+     * @param  kB        the value of k
+     * @return           the list of refracted rays
+     */
+    private List<Ray> constructRefractedRays(GeoPoint gp, Vector v, Vector n, double kB) {
+        Ray reflectedRay = new Ray(gp.point, v, n);
+        double res = reflectedRay.getDirection().dotProduct(n);
+        if (kB == 0) {
+            return List.of(reflectedRay);
+        }
+        else{
+            return new TargetView(reflectedRay, kB).constructRayBeamGrid().stream()
+                    .filter(r -> r.getDirection().dotProduct(n) * res > 0).toList();
+
+        }
+    }
+    /**
+     * Calculates the color of a ray beam based on the given parameters.
+     *
+     * @param  level  the level of the ray beam
+     * @param  k      the k parameter
+     * @param  kx     the kx parameter
+     * @param  rays   the list of rays
+     * @return        the calculated color of the ray beam
+     */
+    private Color calcRayBeamColor(int level, Double3 k, Double3 kx, List<Ray> rays) {
+        if (rays.size() == 1)
+            return calcGlobalEffect(rays.getFirst(), kx, level, k);
+        Color color = Color.BLACK;
+        for (Ray ray : rays) {
+            color = color.add(calcGlobalEffect(ray, kx, level, k));
+        }
+        return color.scale(1.0 / rays.size());
+    }
+
+    private Color calcGlobalEffectGD(GeoPoint geoPoint,Material material,Vector n,Vector v, int level, Double3 k) {
+        Double3 kR = material.kr;
+        Double3 kT = material.kt;
+        return calcRayBeamColor(level,k,kR,constructReflectedRays(geoPoint, v, n,material.glossiness))
+                .add(calcRayBeamColor(level, k, kT, constructRefractedRays(geoPoint, v, n, material.diffuseness)));
+    }
 }
-
-
-
-
-
-
-
