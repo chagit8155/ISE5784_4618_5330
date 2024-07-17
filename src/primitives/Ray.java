@@ -1,5 +1,6 @@
 package primitives;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static geometries.Intersectable.GeoPoint;
@@ -31,15 +32,26 @@ public class Ray {
         this.direction = direction.normalize();
     }
 
-    public Ray(Point p, Vector v, Vector normalToP) {
-        direction = v.normalize();
-        double result = v.dotProduct(normalToP);
-        if (Util.isZero(result))
-            this.head = p;
-        else
-            this.head = p.add(normalToP.scale(Util.alignZero(result) < 0 ? -DELTA : DELTA));
-
-//        head = Util.isZero(result) ? p : p.add(normalToP.scale(Util.alignZero(result)<0? -DELTA:DELTA));
+    /**
+     * Constructor for Ray with a small offset to avoid self-intersection
+     *
+     * @param head The starting point of the ray
+     * @param direction The direction vector of the ray
+     * @param normalToHead The normal vector at the head point
+     * This constructor creates a ray with a slight offset to avoid self-intersection.
+     * The direction vector is normalized. The head point is adjusted by a small offset
+     * (DELTA) along the normal vector if the direction is not perpendicular to the normal.
+     * This ensures the ray originates slightly off the surface to avoid precision issues
+     * that can cause the ray to incorrectly intersect with the surface it originates from.
+     */
+    public Ray(Point head, Vector direction, Vector normalToHead) {
+        this.direction = direction.normalize();
+        double result = direction.dotProduct(normalToHead);
+        if (Util.isZero(result)) {
+            this.head = head;
+        } else {
+            this.head = head.add(normalToHead.scale(Util.alignZero(result) < 0 ? -DELTA : DELTA));
+        }
     }
 
 //    public Ray(Point point, Vector dir, Vector normal) {
@@ -125,5 +137,6 @@ public class Ray {
 
         return closestPoint;
     }
+
 }
 

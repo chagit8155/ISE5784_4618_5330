@@ -11,7 +11,7 @@ import static primitives.Util.isZero;
  * TargetView class is responsible for generating rays targeted at the View Plane (VP) from a given location and direction.
  */
 public class TargetView {
-    private final static int DENSITY = 7;  // Density of the grid for ray construction
+    private final static int DENSITY = 10;  // Density of the grid for ray construction
     Point location;  // The location of the camera or origin point
     Vector vTo;  // The direction vector towards the view plane
     Vector vRight;  // The right vector perpendicular to the direction vector
@@ -35,7 +35,8 @@ public class TargetView {
         double a = vTo.getX();
         double b = vTo.getY();
         double c = vTo.getZ();
-        vRight = (a == b && b == c) ? new Vector(0, -a, a).normalize() : new Vector(b - c, c - a, a - b).normalize();
+        vRight = (a == b && b == c) ? new Vector(0, -a, a).normalize()
+                : new Vector(b - c, c - a, a - b).normalize();
         vUp = vRight.crossProduct(vTo);
         this.heightViewPlane = this.widthViewPlane = size;
     }
@@ -70,7 +71,7 @@ public class TargetView {
     }
 
     /**
-     * Constructs a grid of rays around the central ray to simulate soft shadows or anti-aliasing.
+     * Constructs a grid of rays around the central ray
      *
      * @return List of Ray objects representing the grid of rays
      */

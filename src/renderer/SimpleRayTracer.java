@@ -28,7 +28,7 @@ public class SimpleRayTracer extends RayTracerBase {
     }//v
 
     @Override
-    public Color traceRay(Ray ray) {//v
+    public Color traceRay(Ray ray) {
         GeoPoint closestPoint = scene.geometries.findClosestIntersection(ray);
         return closestPoint == null ? scene.background : calcColor(closestPoint, ray);
     }
@@ -40,7 +40,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param ray the ray that intersected the geometry
      * @return the color at the intersection point
      */
-    private Color calcColor(GeoPoint gp, Ray ray) { //v
+    private Color calcColor(GeoPoint gp, Ray ray) {
         return calcColor(gp, ray, MAX_CALC_COLOR_LEVEL, new Double3(1.0))
                 .add(scene.ambientLight.getIntensity());
     }
@@ -84,11 +84,11 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param k   the accumulated reflection/refraction coefficient
      * @return the color at the intersection point due to local effects
      */
-    private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {//נראה בסדר
+    private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {
         Vector v = ray.getDirection();
         Vector n = gp.geometry.getNormal(gp.point);
         double nv = alignZero(n.dotProduct(v));
-//        if (Util.isZero(nv)) { אין צורך לפיהם
+//        if (Util.isZero(nv)) {
 //            return Color.BLACK;
 //        }
 
@@ -125,7 +125,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param n             the normal at the intersection point
      * @return the transparency coefficient
      */
-    private Double3 transparency(GeoPoint gp, LightSource lightSource, Vector l, Vector n) {//v
+    private Double3 transparency(GeoPoint gp, LightSource lightSource, Vector l, Vector n) {
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(gp.point, lightDirection, n);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
@@ -251,13 +251,12 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private List<Ray> constructReflectedRays(GeoPoint gp, Vector v, Vector n, double kG) {
         Vector r1 = v.subtract(n.scale(2 * v.dotProduct(n)));
-
         Ray reflectedRay = new Ray(gp.point, r1, n); //constructReflectedRay(geoPoint, v, n);
         double res = reflectedRay.getDirection().dotProduct(n);
         if (kG == 0) {
             return List.of(reflectedRay);
         }
-        else{
+        else {
             return new TargetView(reflectedRay, kG).constructRayBeamGrid().stream()
                     .filter(r -> r.getDirection().dotProduct(n) * res > 0).toList();
 
@@ -284,6 +283,8 @@ public class SimpleRayTracer extends RayTracerBase {
 
         }
     }
+
+
     /**
      * Calculates the color of a ray beam based on the given parameters.
      *
