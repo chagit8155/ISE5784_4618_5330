@@ -2,12 +2,14 @@ package renderer;
 
 import primitives.*;
 
+import java.util.LinkedList;
 import java.util.MissingResourceException;
+import java.util.stream.IntStream;
 
 import static primitives.Util.isZero;
 
 /**
- * @author H & H
+ * @authors H & H
  */
 public class Camera implements Cloneable {
     private Point location;
@@ -22,6 +24,19 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
 
+    /**
+     * Pixel manager for supporting:
+     * <ul>
+     * <li>multi-threading</li>
+     * <li>debug print of progress percentage in Console window/tab</li>
+     * <ul>
+     */
+    private PixelManager pixelManager;
+    private double printInterval = 0;
+    private int threadsCount = 0;
+    private boolean isUseThreads = false;
+    private boolean adaptiveSuperSamplingEnabled = false;
+
     private Camera() {
     }
 
@@ -34,6 +49,7 @@ public class Camera implements Cloneable {
         return height;
     }
 
+
     /**
      * @return the width of the view plane
      */
@@ -41,12 +57,14 @@ public class Camera implements Cloneable {
         return width;
     }
 
+
     /**
      * @return the distance of the view plane from the camera
      */
     public double getDistance() {
         return distance;
     }
+
 
     /**
      * Static method vTo get a new Builder instance.
@@ -80,6 +98,76 @@ public class Camera implements Cloneable {
 
         Vector vIJ = pIJ.subtract(location);
         return new Ray(location, vIJ);
+    }
+
+    /**
+     * Casts a ray through the specified pixel.
+     *
+     * @param nX the number of pixels in the x direction
+     * @param nY the number of pixels in the y direction
+     * @param i  the x index of the pixel
+     * @param j  the y index of the pixel
+     */
+    private void castRay(int nX, int nY, int i, int j) {
+        imageWriter.writePixel(j, i,rayTracer.traceRay(constructRay(nX, nY, j, i)));
+//            if (i == 0 && j % 10 == 0) {
+//                System.out.print("Traced: ");
+//                System.out.print((float) i / (float) camera.imageWriter.getNy() * 100);
+//                System.out.println("%");
+//            }
+        pixelManager.pixelDone();
+    }
+
+
+    /**
+     * Renders the image by casting rays through each pixel and returns the camera instance.
+     *
+     * @return the Camera instance after rendering the image.
+     * @throws UnsupportedOperationException if the ImageWriter or RayTracer is not initialized.
+     */
+    public Camera renderImage() {
+        if (imageWriter == null || rayTracer == null) {
+            throw new UnsupportedOperationException("ImageWriter or RayTracer is not initialized");
+        }
+        final int nX = imageWriter.getNx();
+        final int nY = imageWriter.getNy();
+
+        pixelManager = new PixelManager(nY, nX, printInterval);
+
+        if (threadsCount == 0) {
+            for (int i = 0; i < nY; ++i) {
+                for (int j = 0; j < nX; ++j) {
+                    castRay(nX, nY, j, i);
+                    // camera.imageWriter.writePixel(j, i, castRay(nX, nY, j, i));
+                }
+            }
+        } else {
+            var threads = new LinkedList<Thread>();
+            while (threadsCount-- > 0) {
+                threads.add(new Thread(() -> {
+                    PixelManager.Pixel pixel;
+                    while ((pixel = pixelManager.nextPixel()) != null) {
+                        castRay(nX, nY, pixel.col(), pixel.row());
+                    }
+                }));
+            }
+
+            for (var thread : threads) thread.start();
+            try {
+                for (var thread : threads) thread.join();
+            } catch (InterruptedException ignore) {
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Writes the image to a file.
+     */
+    public Camera writeToImage() {
+        imageWriter.writeToImage();
+        return this;
     }
 
 
@@ -136,40 +224,8 @@ public class Camera implements Cloneable {
             return (Camera) camera.clone();
         }
 
-        /**
-         * Casts a ray through the specified pixel.
-         *
-         * @param nX the number of pixels in the x direction
-         * @param nY the number of pixels in the y direction
-         * @param i  the x index of the pixel
-         * @param j  the y index of the pixel
-         */
-        private void castRay(int nX, int nY, int i, int j) {
-//            Ray ray = camera.constructRay(nX, nY, i, j);
-//            Color color = camera.rayTracer.traceRay(ray);
-//            camera.imageWriter.writePixel(i, j, color);
-            camera.imageWriter.writePixel(j, i, camera.rayTracer.traceRay(camera.constructRay(nX, nY, j, i)));
-        }
 
 
-        /**
-         * Renders the image by casting rays through each pixel and returns the camera instance.
-         *
-         * @return the Camera instance after rendering the image.
-         * @throws UnsupportedOperationException if the ImageWriter or RayTracer is not initialized.
-         */
-        public Builder renderImage() {
-            if (camera.imageWriter == null || camera.rayTracer == null) {
-                throw new UnsupportedOperationException("ImageWriter or RayTracer is not initialized");
-            }
-
-            for (int i = 0; i < camera.imageWriter.getNx(); i++) {
-                for (int j = 0; j < camera.imageWriter.getNy(); j++) {
-                    castRay(camera.imageWriter.getNx(), camera.imageWriter.getNy(), i, j);
-                }
-            }
-            return this;
-            }
 
         /**
          * Prints a grid on the image with the specified interval and color.
@@ -188,16 +244,37 @@ public class Camera implements Cloneable {
             return this;
         }
 
-        /**
-         * Writes the image to a file.
-         */
-        public Builder writeToImage() {
-            camera.imageWriter.writeToImage();
-            return this;
-        }
+
 
 
         // ******************************** Setters ********************************************
+
+        public Builder setAdaptiveSuperSampling() {
+            camera.adaptiveSuperSamplingEnabled = true;
+            return this;
+        }
+
+        /**
+         * Sets number of threads in builder pattern.
+         *
+         * @param threadsCount
+         * @return Camera that results
+         */
+        public Builder setMultithreading(int threadsCount) {
+            camera.threadsCount = threadsCount;
+            return this;
+        }
+
+        /**
+         * Sets interval size for progress printing in builder pattern.
+         *
+         * @param d
+         * @return Camera that results
+         */
+        public Builder setDebugPrint(double d) {
+            camera.printInterval = d;
+            return this;
+        }
 
         /**
          * Sets the location of the camera.
