@@ -1,13 +1,16 @@
 package renderer;
 
 import static java.awt.Color.*;
-
 import org.junit.jupiter.api.Test;
-
 import geometries.*;
-import lighting.AmbientLight;
+import lighting.*;
 import primitives.*;
 import scene.Scene;
+import org.xml.sax.SAXException;
+import xmlTools.XmlTools;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 /**
  * Test rendering a basic image
@@ -15,10 +18,12 @@ import scene.Scene;
  * @author Dan
  */
 public class RenderTests {
+
     /**
      * Scene of the tests
      */
     private final Scene scene = new Scene("Test scene");
+
     /**
      * Camera builder of the tests
      */
@@ -27,6 +32,7 @@ public class RenderTests {
             .setLocation(Point.ZERO).setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
             .setVpDistance(100)
             .setVpSize(500, 500);
+
 
     /**
      * Produce a scene with basic 3D model and render it into a png image with a
@@ -47,15 +53,18 @@ public class RenderTests {
 //        // right
         camera
                 .setImageWriter(new ImageWriter("base render test", 1000, 1000))
-                .renderImage() //color the image
-                .printGrid(100, new Color(YELLOW)) //reshet
-                .build();
-        camera.writeToImage();
+                 //color the image
+                .build()
+                .renderImage()
+                .printGrid(100, new Color(YELLOW))//reshet
+                .writeToImage();
 
 
     }
 
     // For stage 6 - please disregard in stage 5
+
+
     /**
      * Produce a scene with basic 3D model - including individual lights of the
      * bodies and render it into a png image with a grid
@@ -74,13 +83,10 @@ public class RenderTests {
                 new Triangle(new Point(100, 0, -100), new Point(0, -100, -100), new Point(100, -100, -100))
                         .setEmission(new Color(BLUE)));
         scene.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.2, 0.2, 0.2))); //
-
         camera
                 .setImageWriter(new ImageWriter("color render test", 1000, 1000))
-                .build();
-        camera.renderImage();
-        camera.printGrid(100, new Color(WHITE));
-        camera.writeToImage();
+                .build().renderImage().printGrid(100, new Color(WHITE)).writeToImage();
+
     }
 
 
@@ -90,18 +96,20 @@ public class RenderTests {
      * Test for XML based scene - for bonus
      */
     @Test
-    public void basicRenderXml() {
+    public void basicRenderXml() throws CloneNotSupportedException, ParserConfigurationException, IOException, SAXException {
         // enter XML file name and parse from XML file into scene object
         // using the code you added in appropriate packages
         // ...
         // NB: unit tests is not the correct place to put XML parsing code
-
-//        camera
-//                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
-//                .build()
-//                .renderImage()
-//                .printGrid(100, new Color(YELLOW))
-//                .writeToImage();
+        Scene temp = XmlTools.renderFromXmlFile("xmlRender/renderTestTwoColors.xml");
+        scene.setAmbientLight(temp.ambientLight).setBackground(temp.background).setGeometries(temp.geometries);
+        camera
+                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
+                .build()
+                .renderImage()
+                .printGrid(100, new Color(YELLOW))
+                .writeToImage();
+    }
     }
 
 
@@ -134,5 +142,5 @@ public class RenderTests {
 
 
 
-}
+
 
