@@ -2,10 +2,11 @@ package geometries;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 import primitives.*;
-import static geometries.Intersectable.GeoPoint;
+import static geometries.Intersectable.*;
 
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
@@ -59,6 +60,24 @@ public class Polygon extends Geometry {
         // polygon with this plane.
         // The plane holds the invariant normal (orthogonal unit) vector to the polygon
         plane = new Plane(vertices[0], vertices[1], vertices[2]);
+        if (cbr)
+        {
+            box = new Border();
+            for (var v : this.vertices) {
+                if (v.getX() < box.minX)
+                    box.minX = v.getX();
+                if (v.getY() < box.minY)
+                    box.minY = v.getY();
+                if (v.getZ() < box.minZ)
+                    box.minZ = v.getZ();
+                if (v.getX() > box.maxX)
+                    box.maxX = v.getX();
+                if (v.getY() > box.maxY)
+                    box.maxY = v.getY();
+                if (v.getZ() > box.maxZ)
+                    box.maxZ = v.getZ();
+            }
+        }
         if (size == 3) return; // no need for more tests for a Triangle
 
         Vector n = plane.getNormal();
@@ -94,7 +113,46 @@ public class Polygon extends Geometry {
 
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray , double maxDistance) {
-        return null;
+
+        List<GeoPoint> result = plane.findGeoIntersections(ray);
+
+        if (result == null) {
+            return null;
+        }
+
+        Point P0 = ray.getHead();
+        Vector v = ray.getDirection();
+
+        Point P1 = vertices.get(1);
+        Point P2 = vertices.get(0);
+
+        Vector v1 = P1.subtract(P0);
+        Vector v2 = P2.subtract(P0);
+
+        double sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+
+        if (isZero(sign)) {
+            return null;
+        }
+
+        boolean positive = sign > 0;
+
+        //iterate through all vertices of the polygon
+        for (int i = vertices.size() - 1; i > 0; --i) {
+            v1 = v2;
+            v2 = vertices.get(i).subtract(P0);
+
+            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+            if (isZero(sign)) {
+                return null;
+            }
+
+            if (positive != (sign > 0)) {
+                return null;
+            }
+        }
+
+        return List.of(new GeoPoint(this, result.get(0).point));
     }
 
 

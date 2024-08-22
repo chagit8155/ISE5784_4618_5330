@@ -20,7 +20,7 @@ public class TeaPotTest {
     private static final Color color = new Color(200, 0, 0);
     private static final Material mat = new Material().setKd(0.5).setKs(0.5).setShininess(60);
     private final ImageWriter imageWriter = new ImageWriter("teapot", 800, 800);
-    private final Scene scene = new Scene("Teapot Test Scene");
+    private final Scene scene = new Scene("Teapot Test Scene").setCBR();
     private final Camera.Builder camera =
             Camera.getBuilder()
                     .setDebugPrint(1)   //
@@ -1567,8 +1567,9 @@ public class TeaPotTest {
         camera.setImageWriter(imageWriter);
         camera
                 .setRayTracer(new SimpleRayTracer(scene))
-                .printGrid(50, new Color(YELLOW)).build()
+                .build()
                 .renderImage()
+                .printGrid(50, new Color(YELLOW))
                 .writeToImage();
     }
 

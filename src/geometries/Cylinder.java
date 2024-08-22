@@ -1,66 +1,204 @@
+//package geometries;
+//
+//import primitives.*;
+//
+//import static primitives.Util.*;
+//
+//
+///**
+// * Represents a cylinder in three-dimensional space, extending along a specified axis.
+// * The cylinder is defined by its radius, axis (direction), and height.
+// */
+//public class Cylinder extends Tube {
+//    /**
+//     * The height of the cylinder.
+//     */
+//    private final double height;
+//
+//    /**
+//     * Constructs a cylinder with the specified radius, axis, and height.
+//     *
+//     * @param radius The radius of the cylinder.
+//     * @param axis   The axis of the cylinder, represented by a ray.
+//     * @param height The height of the cylinder.
+//     */
+//    public Cylinder(double radius, Ray axis, double height) {
+//        super(radius, axis);
+//        this.height = height;
+//    }
+//
+//
+//    @Override
+//    public Vector getNormal(Point point) {
+//
+//        //לקרא לסופר
+//        Point p0 = axis.getHead();
+//        Vector v = axis.getDirection();
+//
+//        //returns v because it is in the direction of the axis
+//        if (point.equals(p0))
+//            return v.scale(-1);
+//        //project point-p0 on the ray
+//        Vector u = point.subtract(p0);
+//
+//        // distance from p0 to p1
+//        double t = alignZero(u.dotProduct(v));
+//        //if the given point is at the base of the cylinder, return direction vector
+//        if (Util.isZero(t))
+//            return v.scale(-1);
+//
+//        if (isZero(height - t))
+//            return v;
+//        //Calculates the other point on the axis facing the given point
+//        Point p1 = p0.add(v.scale(t));
+//        //return the normalized vector
+//        return point.subtract(p1).normalize();
+//
+//    }
+//
+//
+//
+////        private boolean isPointOnPlane(Point point, Point planePoint, Vector planeNormal) {
+////            return planeNormal.dotProduct(point.subtract(planePoint)) == 0;
+////        }
+//
+//}
 package geometries;
 
 import primitives.*;
 
-import static primitives.Util.*;
+import java.util.List;
 
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
-/**
- * Represents a cylinder in three-dimensional space, extending along a specified axis.
- * The cylinder is defined by its radius, axis (direction), and height.
- */
 public class Cylinder extends Tube {
-    /**
-     * The height of the cylinder.
-     */
-    private final double height;
+
+    final double height;
+    final Plane bottomBase;
+    final Plane upperBase;
+
+     final Point bottomCenter;
+    private final Point upperCenter;
+    private final Vector dir;
 
     /**
-     * Constructs a cylinder with the specified radius, axis, and height.
-     *
-     * @param radius The radius of the cylinder.
-     * @param axis   The axis of the cylinder, represented by a ray.
-     * @param height The height of the cylinder.
+     * A constructor. It is a constructor of the superclass.
+     * @param axisRay
+     * @param radius
+     * @param height
      */
-    public Cylinder(double radius, Ray axis, double height) {
-        super(radius, axis);
+    public Cylinder(double radius,Ray axisRay,  double height) {
+        super(radius,axisRay);
         this.height = height;
+        this.dir = this.axis.getDirection();
+        this.bottomCenter = this.axis.getHead();
+        this.upperCenter = this.axis.getPoint(this.height);
+        this.bottomBase = new Plane( this.bottomCenter,this.dir );
+        this.upperBase = new Plane(this.upperCenter,this.dir);
     }
 
-
+    /**
+     * Returns the normal vector at the given point
+     *
+     * @param p The point to get the normal at.
+     * @return Nothing.
+     */
     @Override
-    public Vector getNormal(Point point) {
+    public Vector getNormal(Point p) {
+        //if the Point coalesces with head of the axisRay (p0), then returns axisRay Vector in opposite direction
+        //Or, if the Point is on both bottom base and surface, then the normal will be from bottom base
+        if (p.equals(this.bottomCenter) || isZero(p.subtract(this.bottomCenter).dotProduct(this.dir))) {
+            return this.dir.scale(-1);
+        }
 
-        //לקרא לסופר
-        Point p0 = axis.getHead();
-        Vector v = axis.getDirection();
+        //if the Point is on the axisRay, then returns axisRay Vector
+        //Or, if the Point is on both top base and surface, then the normal will be form top base
+        else if ((this.bottomCenter.add(this.dir.scale(this.height)).equals(p)) || isZero(p.subtract(this.bottomCenter.add(this.dir.scale(this.height))).dotProduct(this.dir))) {
+            return this.dir;
+        }
 
-        //returns v because it is in the direction of the axis
-        if (point.equals(p0))
-            return v.scale(-1);
-        //project point-p0 on the ray
-        Vector u = point.subtract(p0);
-
-        // distance from p0 to p1
-        double t = alignZero(u.dotProduct(v));
-        //if the given point is at the base of the cylinder, return direction vector
-        if (Util.isZero(t))
-            return v.scale(-1);
-
-        if (isZero(height - t))
-            return v;
-        //Calculates the other point on the axis facing the given point
-        Point p1 = p0.add(v.scale(t));
-        //return the normalized vector
-        return point.subtract(p1).normalize();
-
+        //if the Point is on the surface itself, then calls Tube's function
+        return super.getNormal(p);
     }
 
+    /**
+     * Returns the height of the rectangle
+     *
+     * @return The height of the rectangle.
+     */
+    public double getHeight() {
+        return height;
+    }
 
+    /**
+     * The function finds the intersections of the ray with the infinite cylinder and then checks whether the intersections
+     * are within the cylinder's height
+     *
+     * @param ray the ray we're checking for intersections with the cylinder
+     * @return The intersection points of the ray with the cylinder.
+     */
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
+        //Step 1 - finding intersection Points with bases:
+        GeoPoint gp1 = baseIntersection(this.bottomBase, ray, this.bottomCenter); //intersection Point with bottom base
+        GeoPoint gp2 = baseIntersection(this.upperBase, ray, this.upperCenter); //intersection Point with upper base
+        if (gp1 != null && gp2 != null) return twoPoints(ray, gp1, gp2);
+        GeoPoint basePoint = gp1 != null ? gp1 : gp2;
 
-//        private boolean isPointOnPlane(Point point, Point planePoint, Vector planeNormal) {
-//            return planeNormal.dotProduct(point.subtract(planePoint)) == 0;
-//        }
+        //Step 2 - checking if intersection Points with Tube are on Cylinder itself:
+        List<GeoPoint> lst = super.findGeoIntersectionsHelper(ray, maxDistance); //intersection Points with Tube
+        if (lst == null) return basePoint == null ? null : List.of(basePoint);
 
+        gp1 = checkIntersection(lst.get(0).point);
+        gp2 = lst.size() < 2 ? null : checkIntersection(lst.get(1).point);
+        if (basePoint != null)
+            return gp1 != null ? twoPoints(ray, basePoint, gp1)
+                    : gp2 != null ? twoPoints(ray, basePoint, gp2) : List.of(basePoint);
+        if (gp1 == null) return gp2 != null ? List.of(gp2) : null;
+        return gp2 != null ? twoPoints(ray, gp1, gp2) : List.of(gp1);
+    }
+
+    /**
+     * If the distance between the intersection point and the center of the sphere is less than the radius of the sphere,
+     * then the intersection point is on the sphere
+     *
+     * @param base The plane that the cylinder is parallel to.
+     * @param ray The ray that intersects the sphere
+     * @param center the center of the sphere
+     * @return The intersection point of the ray and the base of the cylinder.
+     */
+    private GeoPoint baseIntersection(Plane base, Ray ray, Point center) {
+        List<GeoPoint> lst = base.findGeoIntersections(ray); //intersection Points with Plane
+        if (lst == null) return null;
+        Point p = lst.get(0).point;
+        double radius2 = this.radius * this.radius;
+        return alignZero(p.distanceSquared(center) - radius2) < 0 ? new GeoPoint(this, p) : null;
+    }
+
+    /**
+     * If the point is on the line, return a new GeoPoint object
+     *
+     * @param p the point to check if it's on the line
+     * @return A GeoPoint object.
+     */
+    private GeoPoint checkIntersection(Point p) {
+        if (p == null) return null;
+        return alignZero(this.dir.dotProduct(p.subtract(this.bottomCenter))) > 0
+                && alignZero(this.dir.dotProduct(p.subtract(this.upperCenter))) < 0
+                ? new GeoPoint(this, p) : null;
+    }
+
+    /**
+     * It overrides the toString method of the superclass.
+     *
+     * @return The string representation of the object.
+     */
+    @Override
+    public String toString() {
+        return super.toString() +
+                "\nCylinder{" +
+                "height=" + height +
+                '}';
+    }
 }
-

@@ -53,8 +53,10 @@ public class ShadowTests {
         scene.lights.add( //
                 new SpotLight(new Color(400, 240, 0), spotLocation, new Vector(1, 1, -3)) //
                         .setKL(1E-5).setKQ(1.5E-7));
-        camera.setImageWriter(new ImageWriter(pictName, 400, 400)).build();
-        camera.renderImage().writeToImage();
+        camera.setImageWriter(new ImageWriter(pictName, 400, 400))
+                .build()
+                .renderImage()
+                .writeToImage();
     }
 
     /**
@@ -128,8 +130,9 @@ public class ShadowTests {
                 new SpotLight(new Color(700, 400, 400), new Point(40, 40, 115), new Vector(-1, -1, -4)) //
                         .setKL(4E-4).setKQ(2E-5));
 
-        camera.setImageWriter(new ImageWriter("shadowTrianglesSphere", 600, 600)).build();
-        camera.renderImage().writeToImage();
+        camera.setImageWriter(new ImageWriter("shadowTrianglesSphere", 600, 600))
+                .build().renderImage().writeToImage();
+
     }
 
 }

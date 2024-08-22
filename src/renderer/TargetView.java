@@ -1,4 +1,5 @@
 package renderer;
+
 import primitives.*;
 
 import java.util.LinkedList;
@@ -11,21 +12,22 @@ import static primitives.Util.isZero;
  * TargetView class is responsible for generating rays targeted at the View Plane (VP) from a given location and direction.
  */
 public class TargetView {
-    private final static int DENSITY = 10;  // Density of the grid for ray construction
+    private final static int DENSITY = 3;  // Density of the grid for ray construction
     Point location;  // The location of the camera or origin point
     Vector vTo;  // The direction vector towards the view plane
     Vector vRight;  // The right vector perpendicular to the direction vector
     Vector vUp;  // The up vector perpendicular to both direction and right vectors
     double heightViewPlane = 0.0;  // Height of the view plane
     double widthViewPlane = 0.0;  // Width of the view plane
-    double distanceFromViewPlane = 100;  // Distance from the view plane
+    double distanceFromViewPlane = 1000;  // Distance from the view plane
     Point viewPlaneCenter;  // Center point of the view plane
+
 
     /**
      * Constructor for TargetView.
      * Initializes the location and direction of the camera and calculates the view plane center and basis vectors.
      *
-     * @param ray The ray representing the direction and origin of the camera
+     * @param ray  The ray representing the direction and origin of the camera
      * @param size The size of the view plane
      */
     public TargetView(Ray ray, double size) {
@@ -45,15 +47,16 @@ public class TargetView {
      * Default constructor.
      * Initializes an empty TargetView object.
      */
-    public TargetView() {}
+    public TargetView() {
+    }
 
     /**
      * Constructs a ray from the camera location through a specific pixel on the view plane.
      *
      * @param nX Width of the pixel grid
      * @param nY Height of the pixel grid
-     * @param j Column index of the pixel
-     * @param i Row index of the pixel
+     * @param j  Column index of the pixel
+     * @param i  Row index of the pixel
      * @return Ray object representing the constructed ray
      */
     public Ray constructRay(int nX, int nY, double j, double i) {
@@ -70,6 +73,9 @@ public class TargetView {
         return new Ray(location, Vij);
     }
 
+
+
+
     /**
      * Constructs a grid of rays around the central ray
      *
@@ -78,12 +84,15 @@ public class TargetView {
     public List<Ray> constructRayBeamGrid() {
         Random rand = new Random();
         List<Ray> rays = new LinkedList<>();
+
         for (int i = 0; i < DENSITY; i++) {
             for (int j = 0; j < DENSITY; j++) {
                 rays.add(constructRay(DENSITY, DENSITY, rand.nextDouble() + j - 0.5,
                         rand.nextDouble() + i - 0.5));
             }
         }
+
+
         return rays;
     }
 }

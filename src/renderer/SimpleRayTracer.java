@@ -7,7 +7,10 @@ import scene.*;
 import static geometries.Intersectable.*;
 import static primitives.Util.alignZero;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * SimpleRayTracer class extends RayTracerBase and is responsible for tracing rays in a scene and
@@ -73,7 +76,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
         color = color.add(calcLocalEffects(gp, ray, k));//?
         return 1 == level ? color :
-                color.add(calcGlobalEffectGD(gp,material, n, v, level, k));//
+                color.add(calcGlobalEffectGD(gp, material, n, v, level, k));//
     }
 
     /**
@@ -119,10 +122,10 @@ public class SimpleRayTracer extends RayTracerBase {
     /**
      * Calculates the transparency (shadow attenuation) for a given point and light source.
      *
-     * @param gp            the intersection point
-     * @param lightSource   the light source
-     * @param l             the direction from the point to the light source
-     * @param n             the normal at the intersection point
+     * @param gp          the intersection point
+     * @param lightSource the light source
+     * @param l           the direction from the point to the light source
+     * @param n           the normal at the intersection point
      * @return the transparency coefficient
      */
     private Double3 transparency(GeoPoint gp, LightSource lightSource, Vector l, Vector n) {
@@ -184,9 +187,9 @@ public class SimpleRayTracer extends RayTracerBase {
     /**
      * Calculates the diffusive component of the color.
      *
-     * @param kd            the diffusive coefficient
-     * @param l             the direction from the point to the light source
-     * @param n             the normal at the intersection point
+     * @param kd             the diffusive coefficient
+     * @param l              the direction from the point to the light source
+     * @param n              the normal at the intersection point
      * @param lightIntensity the intensity of the light
      * @return the diffusive color component
      */
@@ -199,11 +202,11 @@ public class SimpleRayTracer extends RayTracerBase {
     /**
      * Calculates the specular component of the color.
      *
-     * @param ks            the specular coefficient
-     * @param l             the direction from the point to the light source
-     * @param n             the normal at the intersection point
-     * @param v             the direction of the view
-     * @param shininess     the shininess exponent
+     * @param ks             the specular coefficient
+     * @param l              the direction from the point to the light source
+     * @param n              the normal at the intersection point
+     * @param v              the direction of the view
+     * @param shininess      the shininess exponent
      * @param lightIntensity the intensity of the light
      * @return the specular color component
      */
@@ -240,14 +243,15 @@ public class SimpleRayTracer extends RayTracerBase {
     private Ray constructRefractedRay(GeoPoint gp, Ray ray) {
         return new Ray(gp.point, ray.getDirection(), gp.geometry.getNormal(gp.point));
     }
+
     /**
      * Constructs reflected rays based on the given parameters.
      *
-     * @param  gp  the geometric point
-     * @param  v         the vector
-     * @param  n         the normal vector
-     * @param  kG        the constant factor
-     * @return           a list of reflected rays
+     * @param gp the geometric point
+     * @param v  the vector
+     * @param n  the normal vector
+     * @param kG the constant factor
+     * @return a list of reflected rays
      */
     private List<Ray> constructReflectedRays(GeoPoint gp, Vector v, Vector n, double kG) {
         Vector r1 = v.subtract(n.scale(2 * v.dotProduct(n)));
@@ -255,59 +259,57 @@ public class SimpleRayTracer extends RayTracerBase {
         double res = reflectedRay.getDirection().dotProduct(n);
         if (kG == 0) {
             return List.of(reflectedRay);
-        }
-        else {
+        } else {
             return new TargetView(reflectedRay, kG).constructRayBeamGrid().stream()
                     .filter(r -> r.getDirection().dotProduct(n) * res > 0).toList();
 
         }
     }
+
     /**
      * Construct refracted rays based on the given parameters.
      *
-     * @param  gp  the geometric point
-     * @param  v         the vector v
-     * @param  n         the normal vector
-     * @param  kB        the value of k
-     * @return           the list of refracted rays
+     * @param gp the geometric point
+     * @param v  the vector v
+     * @param n  the normal vector
+     * @param kB the value of k
+     * @return the list of refracted rays
      */
     private List<Ray> constructRefractedRays(GeoPoint gp, Vector v, Vector n, double kB) {
         Ray reflectedRay = new Ray(gp.point, v, n);
         double res = reflectedRay.getDirection().dotProduct(n);
         if (kB == 0) {
             return List.of(reflectedRay);
-        }
-        else{
+        } else {
             return new TargetView(reflectedRay, kB).constructRayBeamGrid().stream()
                     .filter(r -> r.getDirection().dotProduct(n) * res > 0).toList();
-
         }
     }
 
 
-    /**
-     * Calculates the color of a ray beam based on the given parameters.
-     *
-     * @param  level  the level of the ray beam
-     * @param  k      the k parameter
-     * @param  kx     the kx parameter
-     * @param  rays   the list of rays
-     * @return        the calculated color of the ray beam
-     */
-    private Color calcRayBeamColor(int level, Double3 k, Double3 kx, List<Ray> rays) {
-        if (rays.size() == 1)
-            return calcGlobalEffect(rays.getFirst(), kx, level, k);
-        Color color = Color.BLACK;
-        for (Ray ray : rays) {
-            color = color.add(calcGlobalEffect(ray, kx, level, k));
-        }
-        return color.scale(1.0 / rays.size());
+/**
+ * Calculates the color of a ray beam based on the given parameters.
+ *
+ * @param level the level of the ray beam
+ * @param k     the k parameter
+ * @param kx    the kx parameter
+ * @param rays  the list of rays
+ * @return the calculated color of the ray beam
+ */
+private Color calcRayBeamColor(int level, Double3 k, Double3 kx, List<Ray> rays) {
+    if (rays.size() == 1)
+        return calcGlobalEffect(rays.getFirst(), kx, level, k);
+    Color color = Color.BLACK;
+    for (Ray ray : rays) {
+        color = color.add(calcGlobalEffect(ray, kx, level, k));
     }
+    return color.scale(1.0 / rays.size());
+}
 
-    private Color calcGlobalEffectGD(GeoPoint geoPoint,Material material,Vector n,Vector v, int level, Double3 k) {
-        Double3 kR = material.kr;
-        Double3 kT = material.kt;
-        return calcRayBeamColor(level,k,kR,constructReflectedRays(geoPoint, v, n,material.glossiness))
-                .add(calcRayBeamColor(level, k, kT, constructRefractedRays(geoPoint, v, n, material.diffuseness)));
-    }
+private Color calcGlobalEffectGD(GeoPoint geoPoint, Material material, Vector n, Vector v, int level, Double3 k) {
+    Double3 kR = material.kr;
+    Double3 kT = material.kt;
+    return calcRayBeamColor(level, k, kR, constructReflectedRays(geoPoint, v, n, material.glossiness))
+            .add(calcRayBeamColor(level, k, kT, constructRefractedRays(geoPoint, v, n, material.diffuseness)));
+}
 }

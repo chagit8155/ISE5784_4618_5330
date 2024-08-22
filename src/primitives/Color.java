@@ -9,6 +9,7 @@ package primitives;
  * @author Dan Zilberstein
  */
 public class Color {
+
     /**
      * The internal fields maintain RGB components as double numbers from 0 to
      * whatever...
@@ -133,6 +134,30 @@ public class Color {
     public Color reduce(int k) {
         if (k < 1) throw new IllegalArgumentException("Can't scale a color by a by a number lower than 1");
         return new Color(rgb.reduce(k));
+    }
+
+    /**
+     * Checks if the color is almost equal
+     * @param color primitives
+     * @return boolean answer
+     */
+    public  boolean isAlmostEquals(primitives.Color color) {
+
+        return  (Math.abs(this.rgb.d1-color.rgb.d1)<= 2) &&
+                (Math.abs(this.rgb.d2-color.rgb.d2)<= 2) &&
+                (Math.abs(this.rgb.d3-color.rgb.d3)<= 2);
+    }
+
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Color color = (Color) o;
+        return rgb.equals(color.rgb);
     }
 
     @Override

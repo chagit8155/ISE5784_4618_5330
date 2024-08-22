@@ -1,11 +1,7 @@
 package scene;
-
-
-import geometries.Geometries;
-import lighting.AmbientLight;
-import lighting.LightSource;
-import primitives.Color;
-
+import geometries.*;
+import lighting.*;
+import primitives.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,8 +37,6 @@ public class Scene {
     public List<LightSource> lights = new LinkedList<>();
 
 
-
-
     /**
      * Constructor that accepts the name of the scene
      *
@@ -53,8 +47,31 @@ public class Scene {
     }
 
 
-
 //  ********** Setter *******************
+
+    /**
+     * Sets Conservative Bounding Region for creating the scene (for its 3D model).<br>
+     * It must be called <b><u>before</u></b> creating the 3D model (adding bodyes to the scene).
+     *
+     * @return scene object itself
+     */
+    public Scene setCBR() {
+        Intersectable.setCbr();
+        geometries.setBVH();
+        return this;
+    }
+
+    /**
+     * Creates Bounding Volume Hierarchy in the scene's 3D model<br>
+     * It must be called <b><u>after</u></b> creating the 3D model (adding bodyes to the scene).
+     *
+     * @return scene object itself
+     */
+    public Scene setBVH() {
+        geometries.setBVH();
+        return this;
+    }
+
     /**
      * Sets the background color of the scene
      *
@@ -87,18 +104,6 @@ public class Scene {
         this.geometries = geometries;
         return this;
     }
-    /**
-     * Adds a light source to the scene.
-     *
-     * @param light The light source to add.
-     * @return The current scene instance for method chaining.
-     */
-    public Scene addLight(LightSource light) {
-        lights.add(light);
-        return this;
-    }
-
-
 
     /**
      * Sets the lights of the scene

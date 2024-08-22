@@ -116,7 +116,7 @@ class PixelManager {
             if (cRow < maxRows)
                 return new Pixel(cRow, cCol);
         }
-        return null;
+        return null; //if you don't allowed to get the next pixel
     }
 
     /**
@@ -137,4 +137,5 @@ class PixelManager {
             if (flag) System.out.printf(PRINT_FORMAT, percentage / 10d);
         }
     }
+
 }

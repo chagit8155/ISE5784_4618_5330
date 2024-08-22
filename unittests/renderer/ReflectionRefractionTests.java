@@ -28,6 +28,7 @@ public class ReflectionRefractionTests {
     private final Camera.Builder cameraBuilder = Camera.getBuilder()
             .setDirection(new Vector(0, 0, -1), Vector.Y)
            // .setDirection(new Vector(0, 0, -100),new Vector(100,0,0))
+         //   .setDirection(new Vector(0, 0, -1),new Vector(0, -1, 0)) //
             .setRayTracer(new SimpleRayTracer(scene));
 
     /**
@@ -47,9 +48,10 @@ public class ReflectionRefractionTests {
         cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(150, 150)
                 .setImageWriter(new ImageWriter("refractionTwoSpheres", 500, 500))
-                .renderImage()
-                .writeToImage()
-                .build();
+                .build().
+                renderImage()
+                .writeToImage();
+
     }
 
     /**
@@ -78,13 +80,14 @@ public class ReflectionRefractionTests {
         cameraBuilder.setLocation(new Point(0, 0, 10000)).setVpDistance(10000)
                 .setVpSize(2500, 2500)
                 .setImageWriter(new ImageWriter("reflectionTwoSpheresMirrored", 500, 500))
+                .build()
                 .renderImage()
                 .writeToImage()
-                .build();
+                ;
     }
 
     /**
-     * Produce a picture of a two triangles lighted by a spot light with a
+     * Produce a picture of  two triangles lighted by a spot light with a
      * partially
      * transparent Sphere producing partial shadow
      */
@@ -106,9 +109,10 @@ public class ReflectionRefractionTests {
         cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(200, 200)
                 .setImageWriter(new ImageWriter("refractionShadow", 600, 600))
+                .build()
                 .renderImage()
                 .writeToImage()
-                .build();
+                ;
     }
 
 
@@ -168,30 +172,30 @@ public class ReflectionRefractionTests {
                 .setImageWriter(new ImageWriter("MultiObjectsTest", 600, 600))
                 .setRayTracer(new SimpleRayTracer(scene));
 
-        cameraBuilder.renderImage()
-                .writeToImage()
-                .build();
+        cameraBuilder
+                .build()
+                .renderImage()
+                .writeToImage();
+
     }
 
 
+
     @Test
-    public void multiObjectsBonusTest() {
+    public void multiObjectTest() {
         scene.setBackground(new Color(89, 188, 217));
         scene.geometries.add(
                 new Triangle(new Point(-150, -150, -115), new Point(250, -150, -135),
                         new Point(-150, -30, -50))
-                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setKt(0.02))
-                        .setEmission(new Color(12, 143, 12)),
-                new Sphere(10d, new Point(30, 20, -50)).setEmission(new Color(110, 218, 230))
-                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKt(1))///
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(60)).setEmission(new Color(12, 143, 12)),
+                new Sphere(10d, new Point(30, 20, -50)).setEmission(new Color(0, 218, 230))
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKt(0.8).setKr(0.6)),
                 new Sphere(5d, new Point(50, 40, -50)).setEmission(new Color(0, 218, 230))
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKt(0.8).setKr(0.6)),
                 new Sphere(8d, new Point(60, 15, -50)).setEmission(new Color(0, 218, 230))
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKt(0.8).setKr(0.6)),
                 new Triangle(new Point(-55, 40, -50), new Point(-40, -70, -50), new Point(-68, -70, -50))
-                        .setEmission(new Color(61, 38, 12))
-                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKr(0.6)),
+                        .setEmission(new Color(61, 38, 12)),
                 new Triangle(new Point(-55, 40, -50), new Point(-40, -70, -50), new Point(-54, -70, 0))
                         .setEmission(new Color(61, 38, 12)),
                 new Triangle(new Point(-55, 40, -50), new Point(-54, -70, 0), new Point(-68, -70, -50))
@@ -220,20 +224,24 @@ public class ReflectionRefractionTests {
 
         );
         scene.setAmbientLight(new AmbientLight(new Color(153, 217, 234), 0.15));
+//        scene.lights.add(
+//                new DirectionalLight(new Color(700, 400, 400), new Vector(10, -10, -1))
+//        );
+//        scene.lights.add(
+//                new SpotLight(new Color(YELLOW), new Point(-100,100,0), new Vector(10,-5,-10)).setkL(4E-5).setkQ(2E-7)
+//        );
         scene.lights.add(
-                new SpotLight(new Color(YELLOW), new Point(-100,100,0), new Vector(0,1,0)).setKL(4E-5).setKQ(2E-7)
-        );
-        scene.lights.add(
-                new DirectionalLight(new Color(white), new Vector(20, -5, -11))
+                new DirectionalLight(new Color(700, 400, 400), new Vector(20, -10, -10))
         );
 
-
+        //  .setkL(4E-5).setkQ(2E-7));
         cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000d)
                 .setVpSize(200d, 200d)
-                .setImageWriter(new ImageWriter("multiObjectBonus07", 600, 600))
+                //.setAntiAliasingFactor(3)
+                .setImageWriter(new ImageWriter("multyObject07", 600, 600))
+                .build()
                 .renderImage()
-                .writeToImage()
-                .build();
+                .writeToImage();
     }
 }
 

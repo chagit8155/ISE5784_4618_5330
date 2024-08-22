@@ -115,10 +115,6 @@ public class Point {
     }
 
 
-//    @Override
-//    public String toString() {
-//        return xyz.toString();
-//    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

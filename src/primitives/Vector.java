@@ -6,7 +6,9 @@ package primitives;
  */
 public class Vector extends Point {
 
+    public static final Vector X = new Vector(1, 0, 0);
     public static final Vector Y = new Vector(0, 1, 0);
+    public static final Vector Z = new Vector(0, 0, 1);
 
     /**
      * Constructs a vector with the specified coordinates.
@@ -118,6 +120,7 @@ public class Vector extends Point {
         }
         return scale(1 / length);
     }
+
 
     @Override
     public boolean equals(Object obj) {

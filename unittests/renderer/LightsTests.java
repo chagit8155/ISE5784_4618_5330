@@ -47,24 +47,24 @@ public class LightsTests {
     /**
      * Shininess value for most of the geometries in the tests
      */
-    private  final int SHININESS = 301;
+    private final int SHININESS = 301;
     /**
      * Diffusion attenuation factor for some of the geometries in the tests
      */
-    private  final double KD = 0.5;
+    private final double KD = 0.5;
     /**
      * Diffusion attenuation factor for some of the geometries in the tests
      */
-    private  final Double3 KD3 = new Double3(0.2, 0.6, 0.4);
+    private final Double3 KD3 = new Double3(0.2, 0.6, 0.4);
 
     /**
      * Specular attenuation factor for some of the geometries in the tests
      */
-    private  final double KS = 0.5;
+    private final double KS = 0.5;
     /**
      * Specular attenuation factor for some of the geometries in the tests
      */
-    private  final Double3 KS3 = new Double3(0.2, 0.4, 0.3);
+    private final Double3 KS3 = new Double3(0.2, 0.4, 0.3);
 
     /**
      * Material for some of the geometries in the tests
@@ -148,9 +148,9 @@ public class LightsTests {
         scene1.lights.add(new DirectionalLight(sphereLightColor, sphereLightDirection));
 
         camera1.setImageWriter(new ImageWriter("lightSphereDirectional", 500, 500))
-                .build();
-        camera1.renderImage();
-        camera1.writeToImage();
+                .build().renderImage().writeToImage();
+
+
     }
 
     /**
@@ -163,9 +163,7 @@ public class LightsTests {
                 .setKL(0.001).setKQ(0.0002));
 
         camera1.setImageWriter(new ImageWriter("lightSpherePoint", 500, 500))
-                .build();
-        camera1.renderImage();
-        camera1.writeToImage();
+                .build().renderImage().writeToImage();
     }
 
     /**
@@ -178,9 +176,8 @@ public class LightsTests {
                 .setKL(0.001).setKQ(0.0001));
 
         camera1.setImageWriter(new ImageWriter("lightSphereSpot", 500, 500))
-                .build();
-        camera1.renderImage();
-        camera1.writeToImage();
+                .build().renderImage().writeToImage();
+
     }
 
     /**
@@ -192,9 +189,9 @@ public class LightsTests {
         scene2.lights.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
 
         camera2.setImageWriter(new ImageWriter("lightTrianglesDirectional", 500, 500)) //
-                .build(); //
-        camera2.renderImage(); //
-        camera2.writeToImage();
+                .build() //
+                .renderImage() //
+                .writeToImage();
     }
 
     /**
@@ -207,9 +204,9 @@ public class LightsTests {
                 .setKL(0.001).setKQ(0.0002));
 
         camera2.setImageWriter(new ImageWriter("lightTrianglesPoint", 500, 500)) //
-                .build(); //
-        camera2.renderImage(); //
-        camera2.writeToImage(); //
+                .build() //
+                .renderImage() //
+                .writeToImage(); //
     }
 
     /**
@@ -222,9 +219,9 @@ public class LightsTests {
                 .setKL(0.001).setKQ(0.0001));
 
         camera2.setImageWriter(new ImageWriter("lightTrianglesSpot", 500, 500))
-                .build();
-        camera2.renderImage();
-        camera2.writeToImage();
+                .build()
+                .renderImage()
+                .writeToImage();
     }
 
 
@@ -249,7 +246,7 @@ public class LightsTests {
                 .setKL(0.0001).setKQ(0.0002));
 
         // נקודת אור ירוקה ימינה
-        scene2.lights.add(new PointLight(new Color(0, 0,255), new Point(50, 0, -100))
+        scene2.lights.add(new PointLight(new Color(0, 0, 255), new Point(50, 0, -100))
                 .setKL(0.0001).setKQ(0.0002));
 
         // נקודת אור כחולה שמאלה
@@ -261,18 +258,18 @@ public class LightsTests {
                 .setKL(0.0001).setKQ(0.0002));
 
         // נקודת אור כתומה באלכסון
-        scene2.lights.add(new PointLight(new Color(255,165 , 0), new Point(35, 35, -100))
+        scene2.lights.add(new PointLight(new Color(255, 165, 0), new Point(35, 35, -100))
                 .setKL(0.0001).setKQ(0.0002));
 
-        scene1.lights.add(new DirectionalLight(new Color(0,0,255), new Vector(0, 0, -1)));
+        scene1.lights.add(new DirectionalLight(new Color(0, 0, 255), new Vector(0, 0, -1)));
 
         ImageWriter imageWriter = new ImageWriter("triangleMultiLightSource", 500, 500);
 
         camera2.setImageWriter(imageWriter) //
-                .setRayTracer(new SimpleRayTracer(scene2))
+                .setRayTracer(new SimpleRayTracer(scene2)).build()
                 .renderImage() //
-                .writeToImage()
-                .build();
+                .writeToImage();
+
     }
 
 
@@ -286,10 +283,10 @@ public class LightsTests {
         scene1.lights.add(new DirectionalLight(new Color(241, 199, 0), new Vector(0, 0, -1)));
         ImageWriter imageWriter = new ImageWriter("sphereMultiLightSource", 500, 500);
         camera1.setImageWriter(imageWriter) //
-                .setRayTracer(new SimpleRayTracer(scene1)) .build();//
-        camera1.renderImage();
-        //
-        camera1.writeToImage(); //
+                .setRayTracer(new SimpleRayTracer(scene1))
+                .build()
+                .renderImage()
+                .writeToImage(); //
 
     }
 
@@ -307,9 +304,8 @@ public class LightsTests {
 
 
         camera1.setImageWriter(new ImageWriter("lightSphereSpotSharpBonus", 500, 500))
-                .build();
-        camera1.renderImage();
-        camera1.writeToImage();
+                .build().renderImage().writeToImage();
+
 
     }
 
@@ -324,9 +320,8 @@ public class LightsTests {
 
 
         camera2.setImageWriter(new ImageWriter("lightTrianglesSpotSharpBonus", 500, 500)).setRayTracer(new SimpleRayTracer(scene2))
-                .build();
-        camera2.renderImage();
-        camera2.writeToImage();
+                .build().renderImage().writeToImage();
+
 
     }
 

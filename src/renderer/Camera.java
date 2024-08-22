@@ -75,30 +75,48 @@ public class Camera implements Cloneable {
         return new Builder();
     }
 
-    /**
-     * Constructs a ray through a specific pixel on the view plane.
-     *
-     * @param nX the number of columns (width)
-     * @param nY the number of rows (height)
-     * @param j  the column index of the pixel
-     * @param i  the row index of the pixel
-     * @return the constructed ray through the specified center pixel
-     */
-    public Ray constructRay(int nX, int nY, int j, int i) {
-        Point pc = location.add(vTo.scale(distance));
+//    /**
+//     * Constructs a ray through a specific pixel on the view plane.
+//     *
+//     * @param nX the number of columns (width)
+//     * @param nY the number of rows (height)
+//     * @param j  the column index of the pixel
+//     * @param i  the row index of the pixel
+//     * @return the constructed ray through the specified center pixel
+//     */
+//    public Ray constructRay(int nX, int nY, int j, int i) {
+//        Point pc = location.add(vTo.scale(distance));
+//        double rY = height / nY;
+//        double rX = width / nX;
+//        double yI = -(i - (nY - 1) / 2.0) * rY;
+//        double xJ = (j - (nX - 1) / 2.0) * rX;
+//        Point pIJ = pc;
+//        if (!Util.isZero(xJ))
+//            pIJ = pIJ.add(vRight.scale(xJ));
+//        if (!Util.isZero(yI))
+//            pIJ = pIJ.add(vUp.scale(yI));
+//
+//        Vector vIJ = pIJ.subtract(location);
+//        return new Ray(location, vIJ);
+//    }
+
+    private Point findPixelLocation(int nX, int nY, int j, int i) {
+
         double rY = height / nY;
         double rX = width / nX;
-        double yI = -(i - (nY - 1) / 2.0) * rY;
-        double xJ = (j - (nX - 1) / 2.0) * rX;
-        Point pIJ = pc;
-        if (!Util.isZero(xJ))
-            pIJ = pIJ.add(vRight.scale(xJ));
-        if (!Util.isZero(yI))
-            pIJ = pIJ.add(vUp.scale(yI));
 
-        Vector vIJ = pIJ.subtract(location);
-        return new Ray(location, vIJ);
+        double yI = -(i - (nY - 1d) / 2) * rY;
+        double jX = (j - (nX - 1d) / 2) * rX;
+        Point pIJ = location.add(vTo.scale(distance));
+
+        if (yI != 0) pIJ = pIJ.add(vUp.scale(yI));
+        if (jX != 0) pIJ = pIJ.add(vRight.scale(jX));
+        return pIJ;
     }
+    public Ray constructRay(int nX, int nY, int j, int i) {
+        return new Ray(location, findPixelLocation(nX, nY, j, i).subtract(location));
+    }
+
 
     /**
      * Casts a ray through the specified pixel.
@@ -146,7 +164,7 @@ public class Camera implements Cloneable {
             while (threadsCount-- > 0) {
                 threads.add(new Thread(() -> {
                     PixelManager.Pixel pixel;
-                    while ((pixel = pixelManager.nextPixel()) != null) {
+                    while ((pixel = pixelManager.nextPixel()) != null) { //
                         castRay(nX, nY, pixel.col(), pixel.row());
                     }
                 }));
@@ -156,6 +174,8 @@ public class Camera implements Cloneable {
             try {
                 for (var thread : threads) thread.join();
             } catch (InterruptedException ignore) {
+
+
             }
         }
 
@@ -181,7 +201,22 @@ public class Camera implements Cloneable {
             throw new AssertionError(); // Should never happen
         }
     }
-
+    /**
+     * Prints a grid on the image with the specified interval and color.
+     *
+     * @param interval the interval between grid lines
+     * @param color    the color of the grid lines
+     */
+    public Camera printGrid(int interval, Color color) {
+        for (int i = 0; i < imageWriter.getNx(); i++) {
+            for (int j = 0; j < imageWriter.getNy(); j++) {
+                if (i % interval == 0 || j % interval == 0) {
+                    imageWriter.writePixel(i, j, color); //?
+                }
+            }
+        }
+        return this;
+    }
     //======================================= Builder =============================================
 
     public static class Builder {
@@ -227,32 +262,13 @@ public class Camera implements Cloneable {
 
 
 
-        /**
-         * Prints a grid on the image with the specified interval and color.
-         *
-         * @param interval the interval between grid lines
-         * @param color    the color of the grid lines
-         */
-        public Builder printGrid(int interval, Color color) {
-            for (int i = 0; i < camera.imageWriter.getNx(); i++) {
-                for (int j = 0; j < camera.imageWriter.getNy(); j++) {
-                    if (i % interval == 0 || j % interval == 0) {
-                        camera.imageWriter.writePixel(i, j, color); //?
-                    }
-                }
-            }
-            return this;
-        }
+
 
 
 
 
         // ******************************** Setters ********************************************
 
-        public Builder setAdaptiveSuperSampling() {
-            camera.adaptiveSuperSamplingEnabled = true;
-            return this;
-        }
 
         /**
          * Sets number of threads in builder pattern.
