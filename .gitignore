@@ -26,5 +26,5 @@ bin/
 .vscode/
 
 ### Mac OS ###
-.DS_Store
-/images/
+#.DS_Store
+#/images/
